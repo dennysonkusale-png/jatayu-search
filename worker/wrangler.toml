@@ -1,0 +1,12 @@
+name = "jatayu-search-proxy"
+main = "jatayu-worker.js"
+compatibility_date = "2026-10-01"
+
+# Only your Pages origin may call this worker. Change it if you host the
+# front end elsewhere. Use "*" only while testing.
+[vars]
+ALLOWED_ORIGIN = "https://dennysonkusale-png.github.io"
+
+# Secrets are never stored in this file. Set them with:
+#   wrangler secret put BRAVE_API_KEY     # https://brave.com/search/api/
+#   wrangler secret put SEARXNG_URL       # e.g. https://searx.example.com
