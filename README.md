@@ -13,6 +13,7 @@ Open `jatayu.html` and everything below is live, in one self-contained file with
 - **Location filter** — opt-in only. Use my location, pick a city, or enter a PIN code; radius chips from 1 to 50 km; a dismissible chip that always shows when a filter is active.
 - **Nine interface languages** — English, हिन्दी, मराठी, संस्कृतम्, Español, Français, العربية, 日本語, 简体中文 — with real right-to-left handling for Arabic.
 - **Voice search** via the Web Speech API, with per-language recognition and an editable transcript.
+- **Account menu and settings in the top-right corner.** Sign-in creates a device-local session and shows your initials; the menu carries saved searches and sign-out. It says plainly that there is no server behind it yet.
 - **Email results** and **saved searches**, both device-local in this build.
 
 ## Run it locally
@@ -32,7 +33,7 @@ Being explicit, because a prototype that pretends to be a product wastes everyon
 - **There is no general web index.** Every tab calls a public, CORS-enabled API straight from the browser: Wikipedia for web results, Wikimedia Commons for images and video, Wikinews for headlines, and OpenStreetMap's Nominatim for nearby places. So a query with no matching article returns little or nothing, and nothing is ranked like a real search engine. Pages behind JavaScript, logins or `noindex` are invisible.
 - **The Videos tab is thin.** Commons holds relatively few video files, so expect sparse results until a search proxy is connected.
 - **Nominatim's usage policy caps this at roughly one request per second** and forbids heavy or bulk use. That is fine for a demo and not fine for real traffic — see below.
-- **No backend.** Sign-in, cross-device sync and scheduled email digests are specified but not implemented. "Email results" opens the user's mail client with the results pre-filled.
+- **No backend.** The sign-in in the header is a local session, not authentication: there is no password, no verification and no server, so it must not be presented as a real account. Cross-device sync and scheduled email digests are specified but not implemented. "Email results" opens the user's mail client with the results pre-filled.
 - **No PWA manifest or service worker**, so no offline shell or install prompt.
 - **Theme, history and location live in `localStorage`** and never leave the device.
 
