@@ -98,6 +98,20 @@ form.bar input::placeholder{color:var(--muted)}
 .empty .btn{margin-top:12px}
 
 /* drawer */
+.acct .initials{font-size:12.5px;font-weight:700;letter-spacing:.3px}
+.acctMenu{position:fixed;top:62px;inset-inline-end:12px;z-index:60;width:min(260px,86vw);
+  background:var(--bg);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:12px}
+.acctMenu p{margin:0 0 10px;font-size:12.5px;color:var(--muted);word-break:break-all}
+.acctMenu .btn{display:block;width:100%;text-align:start;margin-bottom:8px}
+.acctMenu .btn:last-child{margin-bottom:0}
+.modal{position:fixed;z-index:60;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,92vw);
+  background:var(--bg);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.modal h3{margin:0 0 8px;font-size:17px}
+.modal p{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+.modal input{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:10px;
+  padding:11px 12px;font-size:15px;margin-bottom:10px;outline:none}
+.modal input:focus{border-color:var(--accent)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .drawer{position:fixed;top:0;right:0;height:100%;width:min(360px,92vw);background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow);transform:translateX(102%);transition:transform .25s ease;z-index:40;overflow:auto;padding:18px}
 .drawer.open{transform:none}
 .drawer h3{margin:0 0 14px;font-size:16px;display:flex;align-items:center}
@@ -206,6 +220,9 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
         <option value="zh">简体中文</option>
       </optgroup>
     </select>
+    <button class="iconbtn acct" id="acctBtn" aria-label="Account" aria-haspopup="menu">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.3 3.1-5.4 7-5.4s7 2.1 7 5.4"/></svg>
+    </button>
     <button class="iconbtn" id="themeBtn" title="Theme" aria-label="Toggle theme">◐</button>
     <button class="iconbtn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
   </div>
@@ -283,6 +300,28 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
   </div>
 </footer>
 
+<!-- ACCOUNT MENU -->
+<div class="acctMenu" id="acctMenu" role="menu" hidden>
+  <p id="acctWho"></p>
+  <button class="btn" id="acctSavedBtn" role="menuitem"></button>
+  <button class="btn" id="acctAction" role="menuitem"></button>
+</div>
+
+<!-- SIGN-IN MODAL -->
+<div class="scrim" id="authScrim"></div>
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle" hidden>
+  <h3 id="authTitle" data-i18n="signIn"></h3>
+  <p data-i18n="localOnlyNote"></p>
+  <form id="authForm">
+    <label class="sr" for="authEmail" data-i18n="emailLabel"></label>
+    <input id="authEmail" type="email" inputmode="email" autocomplete="email" required>
+    <div class="btnrow">
+      <button class="btn primary" type="submit" data-i18n="continueBtn"></button>
+      <button class="btn" type="button" id="authCancel" data-i18n="cancelBtn"></button>
+    </div>
+  </form>
+</div>
+
 <!-- SETTINGS DRAWER -->
 <div class="scrim" id="dscrim"></div>
 <aside class="drawer" id="drawer" aria-label="Settings">
@@ -346,8 +385,9 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
   </div>
 
   <h5 data-i18n="account"></h5>
-  <p class="hint" data-i18n="accountNote"></p>
+  <p class="hint" data-i18n="localOnlyNote"></p>
   <div class="btnrow">
+    <button class="btn" id="acctDrawerBtn"></button>
     <button class="btn danger" id="clearData" data-i18n="clearData"></button>
   </div>
 </aside>
@@ -409,7 +449,8 @@ var I18N = {
     voiceFallback:"Sanskrit has no browser speech model, so it listens in Hindi.",
     searching:"Searching…", liveNote:"Live results from Wikipedia and OpenStreetMap.", offlineNote:"Live sources unreachable — showing the built-in demo dataset instead.",
     images:"Images", videos:"Videos", needLocation:"Set a location to see nearby places.", tabEmpty:"Nothing here yet for this query. Try different words.",
-    sourcesLabel:"Sources"
+    sourcesLabel:"Sources",
+    signIn:"Sign in", signOut:"Sign out", emailLabel:"Email address", continueBtn:"Continue", cancelBtn:"Cancel", signedInAs:"Signed in as", localOnlyNote:"No server yet — this signs you in on this device only. Cross-device sync arrives with the backend.", savedCount:"Saved searches"
   },
   hi:{
     tagline:"जो औरों से छूट जाए, देखिए।",
@@ -437,7 +478,8 @@ var I18N = {
     voiceFallback:"संस्कृत के लिए ब्राउज़र में आवाज़ मॉडल नहीं है; हिन्दी में सुन रहे हैं।",
     searching:"खोज रहे हैं…", liveNote:"विकिपीडिया और ओपनस्ट्रीटमैप से सीधे परिणाम।", offlineNote:"लाइव स्रोत उपलब्ध नहीं — अंदरूनी डेमो डेटा दिखाया जा रहा है।",
     images:"चित्र", videos:"वीडियो", needLocation:"आसपास की जगहें देखने के लिए लोकेशन चुनें।", tabEmpty:"इस खोज के लिए यहाँ कुछ नहीं मिला। दूसरे शब्द आज़माएँ।",
-    sourcesLabel:"स्रोत"
+    sourcesLabel:"स्रोत",
+    signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पता", continueBtn:"आगे बढ़ें", cancelBtn:"रद्द करें", signedInAs:"साइन इन किया गया:", localOnlyNote:"अभी सर्वर नहीं है — यह साइन इन सिर्फ़ इसी डिवाइस पर है। दूसरे डिवाइस पर सिंक बैकएंड आने पर होगा।", savedCount:"सहेजी खोजें"
   },
   mr:{
     tagline:"जे इतरांना दिसत नाही, ते पाहा.",
@@ -465,7 +507,8 @@ var I18N = {
     voiceFallback:"संस्कृतसाठी ब्राउझरमध्ये आवाज मॉडेल नाही; हिंदीत ऐकत आहे.",
     searching:"शोधत आहोत…", liveNote:"विकिपीडिया आणि ओपनस्ट्रीटमॅपवरून थेट निकाल.", offlineNote:"लाइव्ह स्रोत उपलब्ध नाहीत — अंतर्गत डेमो डेटा दाखवत आहोत.",
     images:"चित्रे", videos:"व्हिडिओ", needLocation:"जवळची ठिकाणे पाहण्यासाठी स्थान निवडा.", tabEmpty:"या शोधासाठी येथे काहीही सापडले नाही. वेगळे शब्द वापरून पहा.",
-    sourcesLabel:"स्रोत"
+    sourcesLabel:"स्रोत",
+    signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पत्ता", continueBtn:"पुढे जा", cancelBtn:"रद्द करा", signedInAs:"साइन इन केले:", localOnlyNote:"सध्या सर्व्हर नाही — हे साइन इन फक्त या डिव्हाइसवर आहे. इतर डिव्हाइसवर सिंक बॅकएंड आल्यावर होईल.", savedCount:"साठवलेले शोध"
   },
   sa:{
     tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
@@ -493,7 +536,8 @@ var I18N = {
     voiceFallback:"संस्कृतभाषायै ब्राउज़रे वाग्मॉडेलं नास्ति; हिन्दीभाषया शृणोमि।",
     searching:"अन्विष्यामि…", liveNote:"विकिपीडिया-ओपनस्ट्रीटम्याप्-तः प्रत्यक्षाणि फलानि।", offlineNote:"जीवन्तः स्रोतः न प्राप्तः — अन्तर्निहितः प्रारूपदत्तांशः दर्श्यते।",
     images:"चित्राणि", videos:"चलच्चित्राणि", needLocation:"समीपस्थानानि द्रष्टुं स्थानं चिनु।", tabEmpty:"अस्य अन्वेषणस्य कृते अत्र किमपि न प्राप्तम्। अन्यानि पदानि प्रयुङ्क्ष्व।",
-    sourcesLabel:"स्रोतः"
+    sourcesLabel:"स्रोतः",
+    signIn:"प्रवेशः", signOut:"निर्गमः", emailLabel:"ईपत्रसङ्केतः", continueBtn:"अग्रे", cancelBtn:"निरस्तम्", signedInAs:"प्रवेशितः", localOnlyNote:"सेवकः नास्ति — प्रवेशः अस्मिन् यन्त्र एव। अन्यत्र सङ्क्रमणं पश्चात्।", savedCount:"रक्षितानि अन्वेषणानि"
   },
   es:{
     tagline:"Ve lo que otros no ven.",
@@ -521,7 +565,8 @@ var I18N = {
     voiceFallback:"No hay reconocimiento de voz para sánscrito; se escucha en hindi.",
     searching:"Buscando…", liveNote:"Resultados en vivo de Wikipedia y OpenStreetMap.", offlineNote:"Fuentes en vivo no disponibles: se muestra el conjunto de datos de demostración.",
     images:"Imágenes", videos:"Vídeos", needLocation:"Elige una ubicación para ver lugares cercanos.", tabEmpty:"Aquí no hay nada para esta búsqueda. Prueba otras palabras.",
-    sourcesLabel:"Fuentes"
+    sourcesLabel:"Fuentes",
+    signIn:"Iniciar sesión", signOut:"Cerrar sesión", emailLabel:"Correo electrónico", continueBtn:"Continuar", cancelBtn:"Cancelar", signedInAs:"Sesión iniciada como", localOnlyNote:"Aún no hay servidor: la sesión es solo en este dispositivo. La sincronización llegará con el backend.", savedCount:"Búsquedas guardadas"
   },
   fr:{
     tagline:"Voyez ce que les autres manquent.",
@@ -549,7 +594,8 @@ var I18N = {
     voiceFallback:"Aucune reconnaissance vocale pour le sanskrit ; écoute en hindi.",
     searching:"Recherche…", liveNote:"Résultats en direct de Wikipédia et OpenStreetMap.", offlineNote:"Sources en direct indisponibles : jeu de données de démonstration affiché.",
     images:"Images", videos:"Vidéos", needLocation:"Choisissez un lieu pour voir les endroits à proximité.", tabEmpty:"Rien ici pour cette recherche. Essayez d autres mots.",
-    sourcesLabel:"Sources"
+    sourcesLabel:"Sources",
+    signIn:"Se connecter", signOut:"Se déconnecter", emailLabel:"Adresse e-mail", continueBtn:"Continuer", cancelBtn:"Annuler", signedInAs:"Connecté en tant que", localOnlyNote:"Pas encore de serveur : la connexion ne vaut que pour cet appareil. La synchronisation viendra avec le backend.", savedCount:"Recherches enregistrées"
   },
   ar:{
     tagline:"أبصر ما يفوته الآخرون.",
@@ -577,7 +623,8 @@ var I18N = {
     voiceFallback:"لا يوجد نموذج صوتي للسنسكريت؛ الاستماع بالهندية.",
     searching:"جارٍ البحث…", liveNote:"نتائج مباشرة من ويكيبيديا وخرائط الشوارع المفتوحة.", offlineNote:"المصادر المباشرة غير متاحة — تُعرض بيانات العرض التجريبي.",
     images:"صور", videos:"فيديوهات", needLocation:"اختر موقعاً لعرض الأماكن القريبة.", tabEmpty:"لا شيء هنا لهذا البحث. جرّب كلمات أخرى.",
-    sourcesLabel:"المصادر"
+    sourcesLabel:"المصادر",
+    signIn:"تسجيل الدخول", signOut:"تسجيل الخروج", emailLabel:"البريد الإلكتروني", continueBtn:"متابعة", cancelBtn:"إلغاء", signedInAs:"مسجّل الدخول باسم", localOnlyNote:"لا يوجد خادم بعد — تسجيل الدخول على هذا الجهاز فقط. ستأتي المزامنة مع الخادم.", savedCount:"عمليات البحث المحفوظة"
   },
   ja:{
     tagline:"他の人が見落とすものを見る。",
@@ -605,7 +652,8 @@ var I18N = {
     voiceFallback:"サンスクリット語の音声認識はないため、ヒンディー語で聞き取ります。",
     searching:"検索中…", liveNote:"Wikipedia と OpenStreetMap からの最新結果です。", offlineNote:"ライブソースに接続できないため、内蔵のデモデータを表示しています。",
     images:"画像", videos:"動画", needLocation:"近くの場所を見るには位置情報を設定してください。", tabEmpty:"この検索に該当するものはありません。別の言葉をお試しください。",
-    sourcesLabel:"出典"
+    sourcesLabel:"出典",
+    signIn:"サインイン", signOut:"サインアウト", emailLabel:"メールアドレス", continueBtn:"続行", cancelBtn:"キャンセル", signedInAs:"サインイン中:", localOnlyNote:"サーバーはまだありません。この端末内だけのサインインです。端末間の同期はバックエンド導入後に有効になります。", savedCount:"保存した検索"
   },
   zh:{
     tagline:"看见别人错过的。",
@@ -633,7 +681,8 @@ var I18N = {
     voiceFallback:"浏览器没有梵语语音模型，改用印地语识别。",
     searching:"搜索中…", liveNote:"来自维基百科和 OpenStreetMap 的实时结果。", offlineNote:"无法连接实时来源，显示内置演示数据。",
     images:"图片", videos:"视频", needLocation:"设置位置以查看附近地点。", tabEmpty:"此搜索暂无内容，试试其他词。",
-    sourcesLabel:"来源"
+    sourcesLabel:"来源",
+    signIn:"登录", signOut:"退出", emailLabel:"邮箱地址", continueBtn:"继续", cancelBtn:"取消", signedInAs:"已登录：", localOnlyNote:"尚未接入服务器——登录仅限本设备。跨设备同步将在后端接入后提供。", savedCount:"已保存的搜索"
   },
 };
 /* Which speech-recognition locale each UI language maps to. Sanskrit has no
@@ -669,6 +718,7 @@ var state = {
   results: [],
   lastQuery: "",
   searchSeq: 0,
+  session: null,
   liveMode: false,
   imgURL: null
 };
@@ -1431,6 +1481,59 @@ function emailResults(){
   setStatus(t("mailNote"),false);
 }
 
+/* ============================ account ============================
+   There is no server behind this. The session is a local record, and the
+   interface says so rather than implying a sync that does not exist. */
+function initialsOf(email){
+  var local = String(email || "").split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
+  return (local.slice(0, 2) || "?").toUpperCase();
+}
+function renderAccount(){
+  var btn = $("#acctBtn"), who = $("#acctWho"), action = $("#acctAction");
+  if (state.session && state.session.email) {
+    btn.innerHTML = '<span class="initials">' + esc(initialsOf(state.session.email)) + '</span>';
+    btn.setAttribute("aria-label", t("signedInAs") + " " + state.session.email);
+    who.textContent = t("signedInAs") + " " + state.session.email;
+    action.textContent = t("signOut");
+  } else {
+    btn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.3 3.1-5.4 7-5.4s7 2.1 7 5.4"/></svg>';
+    btn.setAttribute("aria-label", t("signIn"));
+    who.textContent = "";
+    action.textContent = t("signIn");
+  }
+  var savedBtn = $("#acctSavedBtn");
+  savedBtn.textContent = t("savedCount") + " (" + state.saved.length + ")";
+  savedBtn.hidden = !(state.session && state.session.email);
+  var drawerBtn = $("#acctDrawerBtn");
+  if (drawerBtn) drawerBtn.textContent = (state.session && state.session.email) ? t("signOut") : t("signIn");
+}
+function openAuth(){
+  $("#acctMenu").hidden = true;
+  $("#authModal").hidden = false;
+  $("#authScrim").classList.add("show");
+  setTimeout(function(){ var i = $("#authEmail"); if (i) i.focus(); }, 30);
+}
+function closeAuth(){
+  $("#authModal").hidden = true;
+  $("#authScrim").classList.remove("show");
+  var f = $("#authForm"); if (f) f.reset();
+}
+function signIn(email){
+  state.session = { email: email, since: Date.now() };
+  saveJSON("jatayu.session", state.session);
+  renderAccount();
+  closeAuth();
+  setStatus(t("signedInAs") + " " + email, false);
+}
+function signOut(){
+  state.session = null;
+  localStorage.removeItem("jatayu.session");
+  $("#acctMenu").hidden = true;
+  renderAccount();
+  setStatus("", false);
+}
+
 /* ============================ drawer / sheet ============================ */
 function openDrawer(){ $("#dscrim").classList.add("show"); $("#drawer").classList.add("open"); }
 function closeDrawer(){ $("#dscrim").classList.remove("show"); $("#drawer").classList.remove("open"); }
@@ -1459,11 +1562,12 @@ function init(){
   state.history = loadJSON("jatayu.history", []);
   state.saved = loadJSON("jatayu.saved", []);
   state.loc = loadJSON("jatayu.loc", null);
+  state.session = loadJSON("jatayu.session", null);
   if(!PRESETS[state.theme.preset]) state.theme.preset="light";
 
   applyI18n();
   applyTheme();
-  renderHistory(); renderSaved(); renderLocBar();
+  renderHistory(); renderSaved(); renderLocBar(); renderAccount();
 
   /* presets */
   $("#presets").innerHTML = Object.keys(PRESETS).map(function(k){
@@ -1586,13 +1690,46 @@ function init(){
     renderLocBar();
   });
 
+  /* account */
+  $("#acctBtn").addEventListener("click", function(ev){
+    ev.stopPropagation();
+    var menu = $("#acctMenu");
+    menu.hidden = !menu.hidden;
+  });
+  $("#acctAction").addEventListener("click", function(){
+    if (state.session) { signOut(); return; }
+    openAuth();
+  });
+  $("#acctSavedBtn").addEventListener("click", function(){
+    $("#acctMenu").hidden = true;
+    showHome();
+    var box = $("#savedBox");
+    if (box) box.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  $("#authCancel").addEventListener("click", closeAuth);
+  $("#authScrim").addEventListener("click", closeAuth);
+  $("#authForm").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var email = ($("#authEmail").value || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      setStatus(t("emailLabel") + "?", true);
+      return;
+    }
+    signIn(email);
+  });
+  document.addEventListener("click", function(ev){
+    var menu = $("#acctMenu");
+    if (menu.hidden) return;
+    if (!menu.contains(ev.target) && ev.target !== $("#acctBtn")) menu.hidden = true;
+  });
+
   /* drawer controls */
   $("#settingsBtn").addEventListener("click",openDrawer);
   $("#closeDrawer").addEventListener("click",closeDrawer);
   $("#dscrim").addEventListener("click",closeDrawer);
   $("#brand").addEventListener("click",function(){ showHome(); closeDrawer(); });
   document.addEventListener("keydown",function(e){
-    if(e.key==="Escape"){ closeDrawer(); closeSheet(); }
+    if(e.key==="Escape"){ closeDrawer(); closeSheet(); closeAuth(); $("#acctMenu").hidden = true; }
   });
 
   $("#dim").addEventListener("input",function(){
@@ -1666,8 +1803,9 @@ function init(){
       .forEach(function(k){ localStorage.removeItem(k); });
     kvDel("bg").catch(function(){});
     state.theme=defaultTheme(); state.history=[]; state.saved=[]; state.loc=null; state.imgURL=null;
+    state.session=null; localStorage.removeItem("jatayu.session");
     state.lang="en"; state.voiceLang="en-IN"; state.radius=10;
-    applyI18n(); applyTheme(); renderHistory(); renderSaved(); renderLocBar(); showHome();
+    applyI18n(); applyTheme(); renderHistory(); renderSaved(); renderLocBar(); renderAccount(); showHome();
     closeDrawer(); setStatus(t("removed"),false);
   });
 
