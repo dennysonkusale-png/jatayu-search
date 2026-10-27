@@ -2,11 +2,24 @@ name = "jatayu-search-proxy"
 main = "jatayu-worker.js"
 compatibility_date = "2026-10-01"
 
-# Only your Pages origin may call this worker. Change it if you host the
-# front end elsewhere. Use "*" only while testing.
 [vars]
+# Only this origin may call the worker. Use "*" while testing only.
 ALLOWED_ORIGIN = "https://dennysonkusale-png.github.io"
+# "true" when the front end is on a different site to this worker (github.io),
+# which switches the session cookie to SameSite=None.
+CROSS_SITE = "false"
+MAIL_FROM = "Jatayu <login@yourdomain.in>"
 
-# Secrets are never stored in this file. Set them with:
-#   wrangler secret put BRAVE_API_KEY     # https://brave.com/search/api/
-#   wrangler secret put SEARXNG_URL       # e.g. https://searx.example.com
+# Accounts database. Create it once, then paste the id below:
+#   wrangler d1 create jatayu
+#   wrangler d1 execute jatayu --remote --file=./schema.sql
+[[d1_databases]]
+binding = "DB"
+database_name = "jatayu"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+# Secrets (never in this file):
+#   wrangler secret put BRAVE_API_KEY     https://brave.com/search/api/
+#   wrangler secret put SEARXNG_URL       e.g. https://searx.example.com
+#   wrangler secret put RESEND_API_KEY    https://resend.com
+#   wrangler secret put SESSION_PEPPER    any long random string
