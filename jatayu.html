@@ -86,6 +86,16 @@ form.bar input::placeholder{color:var(--muted)}
 .card .row{display:flex;gap:10px;align-items:center;margin-top:9px;font-size:13px}
 .badge{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border-radius:999px;padding:3px 9px;font-size:12.5px;font-weight:600}
 .empty{text-align:center;padding:40px 10px;color:var(--muted)}
+.mediaGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.mediaTile{position:relative;display:block;border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;background:var(--surface);color:inherit;text-decoration:none}
+.mediaTile:hover{border-color:var(--accent);text-decoration:none}
+.mediaTile img{width:100%;height:108px;object-fit:cover;display:block;background:var(--border)}
+.mediaTile .cap{display:block;padding:7px 9px;font-size:12.5px;line-height:1.3;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mediaTile .play{position:absolute;top:8px;inset-inline-start:8px;background:rgba(0,0,0,.62);
+  color:#fff;font-size:11px;border-radius:999px;padding:2px 8px}
+.empty .btn{margin-top:12px}
 
 /* drawer */
 .drawer{position:fixed;top:0;right:0;height:100%;width:min(360px,92vw);background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow);transform:translateX(102%);transition:transform .25s ease;z-index:40;overflow:auto;padding:18px}
@@ -241,6 +251,8 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
       <div class="toolbar">
         <div class="tabs" id="tabs">
           <button data-tab="all" class="on" data-i18n="all"></button>
+          <button data-tab="images" data-i18n="images"></button>
+          <button data-tab="videos" data-i18n="videos"></button>
           <button data-tab="news" data-i18n="news"></button>
           <button data-tab="place" data-i18n="maps"></button>
         </div>
@@ -395,7 +407,9 @@ var I18N = {
     saved_on:"Saved on this device", removed:"Removed", pinned:"Search saved",
     mailNote:"Opening your email app with these results.",
     voiceFallback:"Sanskrit has no browser speech model, so it listens in Hindi.",
-    searching:"Searching…", liveNote:"Live results from Wikipedia and OpenStreetMap.", offlineNote:"Live sources unreachable — showing the built-in demo dataset instead."
+    searching:"Searching…", liveNote:"Live results from Wikipedia and OpenStreetMap.", offlineNote:"Live sources unreachable — showing the built-in demo dataset instead.",
+    images:"Images", videos:"Videos", needLocation:"Set a location to see nearby places.", tabEmpty:"Nothing here yet for this query. Try different words.",
+    sourcesLabel:"Sources"
   },
   hi:{
     tagline:"जो औरों से छूट जाए, देखिए।",
@@ -421,7 +435,9 @@ var I18N = {
     saved_on:"इस डिवाइस पर सहेजा", removed:"हटाया गया", pinned:"खोज सहेजी गई",
     mailNote:"आपके ईमेल ऐप में परिणाम खोले जा रहे हैं।",
     voiceFallback:"संस्कृत के लिए ब्राउज़र में आवाज़ मॉडल नहीं है; हिन्दी में सुन रहे हैं।",
-    searching:"खोज रहे हैं…", liveNote:"विकिपीडिया और ओपनस्ट्रीटमैप से सीधे परिणाम।", offlineNote:"लाइव स्रोत उपलब्ध नहीं — अंदरूनी डेमो डेटा दिखाया जा रहा है।"
+    searching:"खोज रहे हैं…", liveNote:"विकिपीडिया और ओपनस्ट्रीटमैप से सीधे परिणाम।", offlineNote:"लाइव स्रोत उपलब्ध नहीं — अंदरूनी डेमो डेटा दिखाया जा रहा है।",
+    images:"चित्र", videos:"वीडियो", needLocation:"आसपास की जगहें देखने के लिए लोकेशन चुनें।", tabEmpty:"इस खोज के लिए यहाँ कुछ नहीं मिला। दूसरे शब्द आज़माएँ।",
+    sourcesLabel:"स्रोत"
   },
   mr:{
     tagline:"जे इतरांना दिसत नाही, ते पाहा.",
@@ -447,7 +463,9 @@ var I18N = {
     saved_on:"या डिव्हाइसवर साठवले", removed:"काढले", pinned:"शोध साठवला",
     mailNote:"तुमच्या ईमेल अ‍ॅपमध्ये निकाल उघडत आहोत.",
     voiceFallback:"संस्कृतसाठी ब्राउझरमध्ये आवाज मॉडेल नाही; हिंदीत ऐकत आहे.",
-    searching:"शोधत आहोत…", liveNote:"विकिपीडिया आणि ओपनस्ट्रीटमॅपवरून थेट निकाल.", offlineNote:"लाइव्ह स्रोत उपलब्ध नाहीत — अंतर्गत डेमो डेटा दाखवत आहोत."
+    searching:"शोधत आहोत…", liveNote:"विकिपीडिया आणि ओपनस्ट्रीटमॅपवरून थेट निकाल.", offlineNote:"लाइव्ह स्रोत उपलब्ध नाहीत — अंतर्गत डेमो डेटा दाखवत आहोत.",
+    images:"चित्रे", videos:"व्हिडिओ", needLocation:"जवळची ठिकाणे पाहण्यासाठी स्थान निवडा.", tabEmpty:"या शोधासाठी येथे काहीही सापडले नाही. वेगळे शब्द वापरून पहा.",
+    sourcesLabel:"स्रोत"
   },
   sa:{
     tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
@@ -473,7 +491,9 @@ var I18N = {
     saved_on:"अस्यां यन्त्रायां रक्षितम्", removed:"मार्जितम्", pinned:"अन्वेषणं रक्षितम्",
     mailNote:"ईपत्रे फलानि उद्घाट्यन्ते।",
     voiceFallback:"संस्कृतभाषायै ब्राउज़रे वाग्मॉडेलं नास्ति; हिन्दीभाषया शृणोमि।",
-    searching:"अन्विष्यामि…", liveNote:"विकिपीडिया-ओपनस्ट्रीटम्याप्-तः प्रत्यक्षाणि फलानि।", offlineNote:"जीवन्तः स्रोतः न प्राप्तः — अन्तर्निहितः प्रारूपदत्तांशः दर्श्यते।"
+    searching:"अन्विष्यामि…", liveNote:"विकिपीडिया-ओपनस्ट्रीटम्याप्-तः प्रत्यक्षाणि फलानि।", offlineNote:"जीवन्तः स्रोतः न प्राप्तः — अन्तर्निहितः प्रारूपदत्तांशः दर्श्यते।",
+    images:"चित्राणि", videos:"चलच्चित्राणि", needLocation:"समीपस्थानानि द्रष्टुं स्थानं चिनु।", tabEmpty:"अस्य अन्वेषणस्य कृते अत्र किमपि न प्राप्तम्। अन्यानि पदानि प्रयुङ्क्ष्व।",
+    sourcesLabel:"स्रोतः"
   },
   es:{
     tagline:"Ve lo que otros no ven.",
@@ -499,7 +519,9 @@ var I18N = {
     saved_on:"Guardado en este dispositivo", removed:"Borrado", pinned:"Búsqueda guardada",
     mailNote:"Abriendo tu aplicación de correo con estos resultados.",
     voiceFallback:"No hay reconocimiento de voz para sánscrito; se escucha en hindi.",
-    searching:"Buscando…", liveNote:"Resultados en vivo de Wikipedia y OpenStreetMap.", offlineNote:"Fuentes en vivo no disponibles: se muestra el conjunto de datos de demostración."
+    searching:"Buscando…", liveNote:"Resultados en vivo de Wikipedia y OpenStreetMap.", offlineNote:"Fuentes en vivo no disponibles: se muestra el conjunto de datos de demostración.",
+    images:"Imágenes", videos:"Vídeos", needLocation:"Elige una ubicación para ver lugares cercanos.", tabEmpty:"Aquí no hay nada para esta búsqueda. Prueba otras palabras.",
+    sourcesLabel:"Fuentes"
   },
   fr:{
     tagline:"Voyez ce que les autres manquent.",
@@ -525,7 +547,9 @@ var I18N = {
     saved_on:"Enregistré sur cet appareil", removed:"Effacé", pinned:"Recherche enregistrée",
     mailNote:"Ouverture de votre application de messagerie avec ces résultats.",
     voiceFallback:"Aucune reconnaissance vocale pour le sanskrit ; écoute en hindi.",
-    searching:"Recherche…", liveNote:"Résultats en direct de Wikipédia et OpenStreetMap.", offlineNote:"Sources en direct indisponibles : jeu de données de démonstration affiché."
+    searching:"Recherche…", liveNote:"Résultats en direct de Wikipédia et OpenStreetMap.", offlineNote:"Sources en direct indisponibles : jeu de données de démonstration affiché.",
+    images:"Images", videos:"Vidéos", needLocation:"Choisissez un lieu pour voir les endroits à proximité.", tabEmpty:"Rien ici pour cette recherche. Essayez d autres mots.",
+    sourcesLabel:"Sources"
   },
   ar:{
     tagline:"أبصر ما يفوته الآخرون.",
@@ -551,7 +575,9 @@ var I18N = {
     saved_on:"محفوظ على هذا الجهاز", removed:"تم المسح", pinned:"تم حفظ البحث",
     mailNote:"جارٍ فتح تطبيق البريد مع هذه النتائج.",
     voiceFallback:"لا يوجد نموذج صوتي للسنسكريت؛ الاستماع بالهندية.",
-    searching:"جارٍ البحث…", liveNote:"نتائج مباشرة من ويكيبيديا وخرائط الشوارع المفتوحة.", offlineNote:"المصادر المباشرة غير متاحة — تُعرض بيانات العرض التجريبي."
+    searching:"جارٍ البحث…", liveNote:"نتائج مباشرة من ويكيبيديا وخرائط الشوارع المفتوحة.", offlineNote:"المصادر المباشرة غير متاحة — تُعرض بيانات العرض التجريبي.",
+    images:"صور", videos:"فيديوهات", needLocation:"اختر موقعاً لعرض الأماكن القريبة.", tabEmpty:"لا شيء هنا لهذا البحث. جرّب كلمات أخرى.",
+    sourcesLabel:"المصادر"
   },
   ja:{
     tagline:"他の人が見落とすものを見る。",
@@ -577,7 +603,9 @@ var I18N = {
     saved_on:"この端末に保存済み", removed:"削除しました", pinned:"検索を保存しました",
     mailNote:"メールアプリで結果を開いています。",
     voiceFallback:"サンスクリット語の音声認識はないため、ヒンディー語で聞き取ります。",
-    searching:"検索中…", liveNote:"Wikipedia と OpenStreetMap からの最新結果です。", offlineNote:"ライブソースに接続できないため、内蔵のデモデータを表示しています。"
+    searching:"検索中…", liveNote:"Wikipedia と OpenStreetMap からの最新結果です。", offlineNote:"ライブソースに接続できないため、内蔵のデモデータを表示しています。",
+    images:"画像", videos:"動画", needLocation:"近くの場所を見るには位置情報を設定してください。", tabEmpty:"この検索に該当するものはありません。別の言葉をお試しください。",
+    sourcesLabel:"出典"
   },
   zh:{
     tagline:"看见别人错过的。",
@@ -603,7 +631,9 @@ var I18N = {
     saved_on:"已保存在本设备", removed:"已清除", pinned:"已保存搜索",
     mailNote:"正在用邮件应用打开这些结果。",
     voiceFallback:"浏览器没有梵语语音模型，改用印地语识别。",
-    searching:"搜索中…", liveNote:"来自维基百科和 OpenStreetMap 的实时结果。", offlineNote:"无法连接实时来源，显示内置演示数据。"
+    searching:"搜索中…", liveNote:"来自维基百科和 OpenStreetMap 的实时结果。", offlineNote:"无法连接实时来源，显示内置演示数据。",
+    images:"图片", videos:"视频", needLocation:"设置位置以查看附近地点。", tabEmpty:"此搜索暂无内容，试试其他词。",
+    sourcesLabel:"来源"
   },
 };
 /* Which speech-recognition locale each UI language maps to. Sanskrit has no
@@ -995,6 +1025,53 @@ function wikiSearch(q){
   });
 }
 
+/* Wikimedia Commons for images and video: CORS-enabled, no key, and it
+   carries licence metadata we can surface honestly. */
+function commonsSearch(q, kind){
+  var gsr = "filetype:" + (kind === "video" ? "video" : "bitmap");
+  var url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*" +
+            "&generator=search&gsrnamespace=6&gsrlimit=24" +
+            "&gsrsearch=" + encodeURIComponent(gsr + " " + q) +
+            "&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=420";
+  return fetchJSON(url, 8000).then(function(r){
+    var pages = (r && r.query && r.query.pages) ? r.query.pages : {};
+    return Object.keys(pages).map(function(id){
+      var p = pages[id], info = (p.imageinfo && p.imageinfo[0]) || {};
+      var meta = info.extmetadata || {};
+      var lic = meta.LicenseShortName ? stripHtml(meta.LicenseShortName.value) : "";
+      var artist = meta.Artist ? stripHtml(meta.Artist.value) : "";
+      return {
+        title: String(p.title || "").replace(/^File:/, "").replace(/\.[a-z0-9]+$/i, ""),
+        url: info.descriptionurl || ("https://commons.wikimedia.org/wiki/" + encodeURIComponent(p.title || "")),
+        thumb: info.thumburl || info.url || "",
+        source: "Wikimedia Commons",
+        type: kind === "video" ? "video" : "image",
+        snippet: [artist, lic].filter(Boolean).join(" · ")
+      };
+    }).filter(function(x){ return x.thumb; });
+  });
+}
+
+/* Wikinews: the same MediaWiki API, so no key and CORS works. */
+var NEWS_LANG = {en:"en",hi:"en",mr:"en",sa:"en",es:"es",fr:"fr",ar:"ar",ja:"ja",zh:"zh"};
+function wikinewsSearch(q){
+  var lang = NEWS_LANG[state.lang] || "en";
+  var url = "https://" + lang + ".wikinews.org/w/api.php?action=query&list=search" +
+            "&srsearch=" + encodeURIComponent(q) + "&srlimit=12&srprop=snippet&format=json&origin=*";
+  return fetchJSON(url, 7000).then(function(r){
+    if (!r || !r.query || !r.query.search) return [];
+    return r.query.search.map(function(hit){
+      return {
+        title: hit.title,
+        url: "https://" + lang + ".wikinews.org/wiki/" + encodeURIComponent(String(hit.title).replace(/ /g, "_")),
+        source: "Wikinews",
+        type: "news",
+        snippet: stripHtml(hit.snippet) || hit.title
+      };
+    });
+  });
+}
+
 /* "chai near me" -> "chai": local-intent words confuse a place search. */
 function placeQuery(q){
   return q.replace(/\b(near|nearby|near me|around|in|me)\b/gi, " ")
@@ -1055,31 +1132,59 @@ function demoResults(q){
 
 function runSearch(q){
   var local = isLocal(q);
-  var wantPlaces = state.loc && (local || state.tab === "place");
-  var webJob = proxySearch(q).then(function(list){
-    return (list && list.length) ? list : wikiSearch(q);
-  });
-  var jobs = [webJob];
-  if (wantPlaces) jobs.push(osmSearch(q, state.loc, state.radius));
+  var tab = state.tab || "all";
+
+  /* Each tab has its own source. Nothing here pretends a source exists when
+     it does not: the Places tab needs a location, and says so. */
+  var jobs;
+  if (tab === "images")      jobs = [commonsSearch(q, "bitmap")];
+  else if (tab === "videos") jobs = [commonsSearch(q, "video")];
+  else if (tab === "news")   jobs = [wikinewsSearch(q)];
+  else if (tab === "place")  jobs = [state.loc ? osmSearch(q, state.loc, state.radius) : Promise.resolve([])];
+  else {
+    var webJob = proxySearch(q).then(function(list){
+      return (list && list.length) ? list : wikiSearch(q);
+    });
+    jobs = [webJob];
+    if (state.loc && local) jobs.push(osmSearch(q, state.loc, state.radius));
+  }
 
   return Promise.all(jobs).then(function(res){
-    var web = res[0] || [];
+    var first = res[0] || [];
     var places = res[1] || [];
-    var live = (web.length > 0) || (places.length > 0);
     var out;
 
-    if (live) {
-      out = local ? places.concat(web.slice(0, 6)) : web.concat(places.slice(0, 3));
-      state.liveMode = true;
+    if (tab === "images" || tab === "videos" || tab === "news" || tab === "place") {
+      out = first;
+      state.liveMode = first.length > 0;
     } else {
-      out = demoResults(q);
-      state.liveMode = false;
+      var live = (first.length > 0) || (places.length > 0);
+      if (live) {
+        out = local ? places.concat(first.slice(0, 6)) : first.concat(places.slice(0, 3));
+        state.liveMode = true;
+      } else {
+        out = demoResults(q);
+        state.liveMode = false;
+      }
     }
 
-    if (state.tab === "news") out = out.filter(function(r){ return r.type === "news"; });
-    if (state.tab === "place") out = out.filter(function(r){ return r.type === "place"; });
+    if (tab === "news") out = out.filter(function(r){ return r.type === "news"; });
+    if (tab === "place") out = out.filter(function(r){ return r.type === "place"; });
     return out;
   });
+}
+
+/* Credit the source that actually produced these results. */
+function sourceNames(results){
+  var names = [], seen = {};
+  (results || []).forEach(function(r){
+    var name = r.type === "place" ? "OpenStreetMap"
+             : (r.type === "image" || r.type === "video") ? "Wikimedia Commons"
+             : r.type === "news" ? "Wikinews"
+             : (r.source === "Wikipedia" ? "Wikipedia" : "Web");
+    if (!seen[name]) { seen[name] = 1; names.push(name); }
+  });
+  return names;
 }
 
 function renderLoading(){
@@ -1108,24 +1213,54 @@ function applyI18n(){
   $("#pinInput").placeholder="400053";
 }
 function renderResults(){
-  var list=$("#list"), out=state.results;
-  $("#qline").textContent = t("resultsFor")+': "'+state.lastQuery+'" · '+out.length;
-  if(!out.length){
-    list.innerHTML='<div class="empty">'+esc(t("noResults"))+'</div>';
+  var list = $("#list"), out = state.results || [];
+  var tab = state.tab || "all";
+
+  $("#qline").textContent = t("resultsFor") + ': "' + state.lastQuery + '" · ' + out.length;
+
+  /* Places needs coordinates; ask for one instead of showing an empty page. */
+  if (tab === "place" && !state.loc) {
+    list.innerHTML = '<div class="empty">' + esc(t("needLocation")) +
+      '<div><button class="btn primary" id="askLoc">' + esc(t("near")) + '</button></div></div>';
+    var ask = $("#askLoc");
+    if (ask) ask.addEventListener("click", openSheet);
     return;
   }
+
+  if (!out.length) {
+    var msg = (tab === "all") ? t("noResults") : t("tabEmpty");
+    list.innerHTML = '<div class="empty">' + esc(msg) + '</div>';
+    return;
+  }
+
+  var isMedia = tab === "images" || tab === "videos";
+  if (isMedia) {
+    list.innerHTML = '<div class="mediaGrid">' + out.map(function(r){
+      var play = r.type === "video" ? '<span class="play">▶</span>' : "";
+      return '<a class="mediaTile" href="' + esc(r.url) + '" target="_blank" rel="noopener"' +
+             ' title="' + esc(r.title) + '">' + play +
+             '<img src="' + esc(r.thumb) + '" alt="' + esc(r.title) + '" loading="lazy">' +
+             '<span class="cap">' + esc(r.title) + '</span></a>';
+    }).join("") + '</div>';
+    return;
+  }
+
   list.innerHTML = out.map(function(r){
-    var dist = (typeof r.distanceKm==="number") ? '<span class="badge">'+r.distanceKm.toFixed(1)+' km</span>' : "";
-    var dir = (typeof r.lat==="number") ?
-      '<a href="https://www.google.com/maps/dir/?api=1&destination='+r.lat+','+r.lng+'" target="_blank" rel="noopener">'+esc(t("directions"))+'</a>' : "";
-    return '<article class="card">'+
-      '<div class="meta"><span class="fav"></span><span>'+esc(r.source)+'</span><span>·</span><span>'+esc(host(r.url))+'</span></div>'+
-      '<h3><a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.title)+'</a></h3>'+
-      '<p>'+esc(r.snippet)+'</p>'+
-      '<div class="row">'+dist+dir+'</div>'+
+    var dist = (typeof r.distanceKm === "number")
+      ? '<span class="badge">' + r.distanceKm.toFixed(1) + ' km</span>' : "";
+    var dir = (typeof r.lat === "number")
+      ? '<a href="https://www.google.com/maps/dir/?api=1&destination=' + r.lat + ',' + r.lng +
+        '" target="_blank" rel="noopener">' + esc(t("directions")) + '</a>' : "";
+    return '<article class="card">' +
+      '<div class="meta"><span class="fav"></span><span>' + esc(r.source) + '</span>' +
+      '<span>·</span><span>' + esc(host(r.url)) + '</span></div>' +
+      '<h3><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></h3>' +
+      '<p>' + esc(r.snippet) + '</p>' +
+      '<div class="row">' + dist + dir + '</div>' +
     '</article>';
   }).join("");
 }
+
 function placeSearchForm(where){
   var form = $("#searchForm");
   if (where === "header") {
@@ -1209,7 +1344,12 @@ function doSearch(q){
     state.results = out;
     renderResults();
     var note = $("#srcNote");
-    if (note) note.textContent = state.liveMode ? t("liveNote") : t("offlineNote");
+    if (note) {
+      var names = sourceNames(state.results);
+      note.textContent = state.liveMode
+        ? t("sourcesLabel") + ": " + names.join(", ")
+        : t("offlineNote");
+    }
   });
 }
 
@@ -1384,7 +1524,10 @@ function init(){
     b.addEventListener("click",function(){
       $$("#tabs button").forEach(function(x){ x.classList.remove("on"); });
       b.classList.add("on"); state.tab=b.dataset.tab;
-      if(state.lastQuery){ state.results=runSearch(state.lastQuery); renderResults(); }
+      /* runSearch is async now: assigning its Promise to state.results was
+         why tab switches rendered nothing. Go through doSearch so the
+         loading state and the stale-response guard apply. */
+      if(state.lastQuery) doSearch(state.lastQuery);
     });
   });
 
