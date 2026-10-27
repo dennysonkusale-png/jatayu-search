@@ -1,0 +1,1347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jatayu — see what others miss</title>
+<meta name="theme-color" content="#ffffff">
+<style>
+:root{
+  --bg:#ffffff;--surface:#f4f6f9;--text:#12161c;--muted:#5b6472;--accent:#1f6feb;--border:#e3e8ee;
+  --bg-dim:0.45;--bg-blur:0px;--bg-pos:center;--r:14px;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 10px 28px rgba(16,24,40,.09);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari","Nirmala UI",
+    "Noto Naskh Arabic","Geeza Pro","Noto Sans JP","Hiragino Sans","Noto Sans SC","Microsoft YaHei",Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;
+  font-size:16px;
+}
+body.has-img{background-image:var(--bg-img);background-size:cover;background-position:var(--bg-pos);background-attachment:fixed}
+body.has-img::before{content:"";position:fixed;inset:-40px;background:rgba(0,0,0,var(--bg-dim));backdrop-filter:blur(var(--bg-blur));z-index:-1}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select{font:inherit;color:inherit}
+.wrap{max-width:800px;margin:0 auto;padding:0 18px}
+
+header.top{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--border)}
+header.top .wrap{display:flex;align-items:center;gap:10px;height:58px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:19px;letter-spacing:-.2px;color:var(--text);cursor:pointer}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800}
+.spacer{flex:1}
+.iconbtn{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;font-size:16px;line-height:1}
+.iconbtn:hover{border-color:var(--accent)}
+select.lang{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:8px 10px;font-size:14px}
+
+main{padding:26px 0 90px;min-height:70vh}
+h1.logo{font-size:clamp(34px,9vw,54px);margin:26px 0 4px;letter-spacing:-1.5px;font-weight:800;text-align:center}
+.tag{text-align:center;color:var(--muted);margin:0 0 22px;font-size:15px}
+
+form.bar{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px;padding-inline-start:18px;box-shadow:var(--shadow)}
+form.bar:focus-within{border-color:var(--accent)}
+form.bar input{flex:1;min-width:0;border:0;background:transparent;outline:none;padding:12px 0;font-size:16px}
+form.bar input::placeholder{color:var(--muted)}
+.mic{width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:grid;place-items:center;flex:none}
+.mic.listening{background:#e5484d;border-color:#e5484d;color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}50%{box-shadow:0 0 0 12px rgba(229,72,77,0)}}
+.go{border:0;background:var(--accent);color:#fff;border-radius:999px;padding:12px 20px;font-weight:600;flex:none}
+.go:hover{filter:brightness(1.08)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 0}
+.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:13.5px;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chip .x{opacity:.7;font-weight:700}
+
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin:18px auto 0;max-width:560px}
+.status{margin:12px auto 0;max-width:600px;font-size:13.5px;text-align:center;color:var(--muted)}
+.status.err{color:#c22f34}
+
+.recent{margin-top:26px}
+.recent h4,.savedbox h4{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px;font-weight:700}
+.rowwrap{display:flex;flex-wrap:wrap;gap:8px}
+
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:16px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px;overflow:auto}
+.tabs button{border:0;background:transparent;border-radius:999px;padding:7px 13px;font-size:13.5px;white-space:nowrap}
+.tabs button.on{background:var(--accent);color:#fff}
+.qline{color:var(--muted);font-size:14px;margin:0 0 14px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+.card .meta{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.card .fav{width:16px;height:16px;border-radius:4px;background:var(--accent);opacity:.85;display:inline-block;flex:none}
+.card h3{margin:0 0 5px;font-size:17px;line-height:1.35;font-weight:650}
+.card h3 a{color:var(--text)}
+.card h3 a:hover{color:var(--accent);text-decoration:none}
+.card p{margin:0;font-size:14.5px;color:var(--muted)}
+.card .row{display:flex;gap:10px;align-items:center;margin-top:9px;font-size:13px}
+.badge{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border-radius:999px;padding:3px 9px;font-size:12.5px;font-weight:600}
+.empty{text-align:center;padding:40px 10px;color:var(--muted)}
+
+/* drawer */
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(360px,92vw);background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow);transform:translateX(102%);transition:transform .25s ease;z-index:40;overflow:auto;padding:18px}
+.drawer.open{transform:none}
+.drawer h3{margin:0 0 14px;font-size:16px;display:flex;align-items:center}
+.drawer h5{margin:20px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.preset{border:1px solid var(--border);border-radius:10px;padding:8px 6px;background:var(--surface);font-size:12px;text-align:center}
+.preset i{display:block;height:16px;border-radius:6px;margin-bottom:6px}
+.swatchrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:7px 0;font-size:13.5px}
+.swatchrow input[type=color]{width:44px;height:30px;border:1px solid var(--border);border-radius:8px;background:none;padding:2px}
+input[type=range]{width:100%}
+.field{margin:10px 0}
+.field label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.field input[type=text],.field select,.field input[type=file]{width:100%;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:9px 11px;font-size:14px}
+.warnbox{border:1px solid #e5a500;background:rgba(229,165,0,.1);border-radius:10px;padding:10px;font-size:13px;margin:10px 0}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:9px 12px;font-size:13.5px}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.danger{color:#c22f34;border-color:#c22f34}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:45;display:none}
+.scrim.show{display:block}
+#dscrim{z-index:35}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--bg);border-radius:18px 18px 0 0;padding:16px 18px 22px;transform:translateY(102%);transition:transform .25s ease;max-height:80vh;overflow:auto}
+.sheet.open{transform:none}
+.sheet h3{margin:0 0 12px;font-size:16px}
+.citylist{max-height:220px;overflow:auto;border:1px solid var(--border);border-radius:12px;margin-top:8px}
+.citylist button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--border);background:transparent;padding:10px 12px;font-size:14px}
+.citylist button:hover{background:var(--surface)}
+.radios{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.grab{width:42px;height:4px;border-radius:99px;background:var(--border);margin:0 auto 12px}
+
+footer{border-top:1px solid var(--border);padding:18px 0 30px;font-size:12.5px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+@media(max-width:560px){
+  main{padding-top:10px}
+  h1.logo{margin-top:14px}
+  .go{padding:12px 16px}
+  .card h3{font-size:16px}
+}
+/* Right-to-left: the drawer enters from the left, and nothing may assume a
+   left edge. Arabic is the first locale that exercises this. */
+[dir="rtl"] .drawer{right:auto;left:0;border-left:0;border-right:1px solid var(--border);transform:translateX(-102%)}
+[dir="rtl"] .drawer.open{transform:none}
+[dir="rtl"] form.bar{padding-inline-start:6px;padding-inline-end:18px}
+[dir="rtl"] .citylist button{text-align:right}
+[dir="rtl"] .swatchrow{flex-direction:row-reverse}
+[dir="rtl"] .card h3,[dir="rtl"] .qline,[dir="rtl"] .status,[dir="rtl"] .card p{text-align:right}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>
+/* Theme boot — runs before paint so there is no flash of the wrong theme. */
+(function(){
+  try{
+    var raw=localStorage.getItem('jatayu.theme'); if(!raw) return;
+    var t=JSON.parse(raw), c=t.colors||{}, mode=t.mode||'system';
+    var dark = mode==='dark' || (mode==='system' && matchMedia('(prefers-color-scheme: dark)').matches);
+    var root=document.documentElement;
+    if(c.bg) root.style.setProperty('--bg',c.bg);
+    if(c.surface) root.style.setProperty('--surface',c.surface);
+    if(c.text) root.style.setProperty('--text',c.text);
+    if(c.muted) root.style.setProperty('--muted',c.muted);
+    if(c.accent) root.style.setProperty('--accent',c.accent);
+    if(c.border) root.style.setProperty('--border',c.border);
+    root.dataset.mode = dark?'dark':'light';
+  }catch(e){}
+})();
+</script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand" id="brand"><span class="mark">ज</span><span>Jatayu</span></div>
+    <div class="spacer"></div>
+    <select class="lang" id="langSel" aria-label="Language">
+      <optgroup label="India">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="mr">मराठी</option>
+        <option value="sa">संस्कृतम्</option>
+      </optgroup>
+      <optgroup label="Global">
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+        <option value="ja">日本語</option>
+        <option value="zh">简体中文</option>
+      </optgroup>
+    </select>
+    <button class="iconbtn" id="themeBtn" title="Theme" aria-label="Toggle theme">◐</button>
+    <button class="iconbtn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <!-- HOME -->
+    <section id="home">
+      <h1 class="logo">Jatayu</h1>
+      <p class="tag" data-i18n="tagline"></p>
+
+      <form class="bar" id="searchForm" role="search">
+        <input id="q" type="search" autocomplete="off" enterkeyhint="search" aria-label="Search">
+        <button type="button" class="mic" id="micBtn" aria-label="Voice search" aria-pressed="false" title="Voice search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>
+        </button>
+        <button type="submit" class="go" data-i18n="search"></button>
+      </form>
+
+      <div class="chips">
+        <button class="chip" id="nearChip" data-i18n="near"></button>
+        <button class="chip" id="voiceLangChip" title="Voice language"><span data-i18n="voiceLang"></span> · <span id="voiceLangLabel">en-IN</span></button>
+      </div>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+
+      <div class="recent" id="recentBox" hidden>
+        <h4 data-i18n="recent"></h4>
+        <div class="rowwrap" id="recentList"></div>
+      </div>
+
+      <div class="recent savedbox" id="savedBox" hidden>
+        <h4 data-i18n="saved"></h4>
+        <div class="rowwrap" id="savedList"></div>
+      </div>
+
+      <p class="note" data-i18n="protoNote"></p>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" hidden>
+      <div class="toolbar">
+        <div class="tabs" id="tabs">
+          <button data-tab="all" class="on" data-i18n="all"></button>
+          <button data-tab="news" data-i18n="news"></button>
+          <button data-tab="place" data-i18n="maps"></button>
+        </div>
+        <div class="spacer"></div>
+        <div class="actions">
+          <button class="chip" id="pinBtn" data-i18n="pin"></button>
+          <button class="chip" id="emailBtn" data-i18n="email"></button>
+        </div>
+      </div>
+      <div class="toolbar" id="locBar" hidden>
+        <button class="chip on" id="locChip"></button>
+        <button class="chip" id="widenBtn" hidden data-i18n="widen"></button>
+      </div>
+      <p class="qline" id="qline" aria-live="polite"></p>
+      <div id="understood" class="status" hidden></div>
+      <div id="list"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© Jatayu — prototype</span>
+    <span class="spacer"></span>
+    <span data-i18n="footerNote"></span>
+  </div>
+</footer>
+
+<!-- SETTINGS DRAWER -->
+<div class="scrim" id="dscrim"></div>
+<aside class="drawer" id="drawer" aria-label="Settings">
+  <h3><span data-i18n="settings"></span><span class="spacer"></span><button class="iconbtn" id="closeDrawer" aria-label="Close">✕</button></h3>
+
+  <h5 data-i18n="presets"></h5>
+  <div class="presets" id="presets"></div>
+
+  <h5 data-i18n="colours"></h5>
+  <div id="swatches"></div>
+  <div id="warnSlot"></div>
+
+  <h5 data-i18n="bg"></h5>
+  <div class="field">
+    <label data-i18n="upload"></label>
+    <input type="file" id="bgFile" accept="image/*">
+    <div class="btnrow"><button class="btn" id="clearImg" data-i18n="none"></button></div>
+  </div>
+  <div class="field">
+    <label><span data-i18n="dim"></span> <span id="dimVal">45%</span></label>
+    <input type="range" id="dim" min="0" max="85" value="45">
+  </div>
+  <div class="field">
+    <label><span data-i18n="blur"></span> <span id="blurVal">0px</span></label>
+    <input type="range" id="blur" min="0" max="20" value="0">
+  </div>
+  <div class="field">
+    <label data-i18n="position"></label>
+    <select id="pos"><option value="top">Top</option><option value="center" selected>Centre</option><option value="bottom">Bottom</option></select>
+  </div>
+
+  <div class="btnrow">
+    <button class="btn" id="exportBtn" data-i18n="exportT"></button>
+    <button class="btn" id="importBtn" data-i18n="importT"></button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+    <button class="btn" id="resetBtn" data-i18n="reset"></button>
+  </div>
+
+  <h5 data-i18n="language"></h5>
+  <div class="field">
+    <label data-i18n="voiceLang"></label>
+    <select id="voiceLang">
+      <option value="en-IN">English (India)</option>
+      <option value="hi-IN">हिन्दी</option>
+      <option value="mr-IN">मराठी</option>
+      <option value="bn-IN">বাংলা</option>
+      <option value="ta-IN">தமிழ்</option>
+      <option value="te-IN">తెలుగు</option>
+      <option value="gu-IN">ગુજરાતી</option>
+      <option value="kn-IN">ಕನ್ನಡ</option>
+      <option value="ml-IN">മലയാളം</option>
+      <option value="pa-IN">ਪੰਜਾਬੀ</option>
+      <option value="or-IN">ଓଡ଼ିଆ</option>
+      <option value="ur-IN">اردو</option>
+      <option value="es-ES">Español</option>
+      <option value="fr-FR">Français</option>
+      <option value="ar-SA">العربية</option>
+      <option value="ja-JP">日本語</option>
+      <option value="zh-CN">简体中文</option>
+    </select>
+  </div>
+
+  <h5 data-i18n="account"></h5>
+  <p class="hint" data-i18n="accountNote"></p>
+  <div class="btnrow">
+    <button class="btn danger" id="clearData" data-i18n="clearData"></button>
+  </div>
+</aside>
+
+<!-- LOCATION SHEET -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" aria-label="Location">
+  <div class="grab"></div>
+  <h3 data-i18n="near"></h3>
+  <div class="btnrow">
+    <button class="btn primary" id="geoBtn" data-i18n="useMyLoc"></button>
+    <button class="btn" id="pinToggle" data-i18n="enterPin"></button>
+  </div>
+  <div class="field" id="pinField" hidden>
+    <label data-i18n="enterPin"></label>
+    <input type="text" id="pinInput" inputmode="numeric" maxlength="6" placeholder="400053">
+    <div class="hint" data-i18n="pinHint"></div>
+    <div class="btnrow"><button class="btn primary" id="pinGo" data-i18n="search"></button></div>
+  </div>
+  <div class="field">
+    <label data-i18n="pickCity"></label>
+    <input type="text" id="cityFilter" placeholder="Mumbai, पुणे, Bengaluru…">
+    <div class="citylist" id="cityList"></div>
+  </div>
+  <div class="field">
+    <label data-i18n="radius"></label>
+    <div class="radios" id="radiusRow"></div>
+  </div>
+  <p class="status" id="sheetStatus" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+"use strict";
+/* ============================ i18n ============================ */
+var I18N = {
+  en:{
+    tagline:"See what others miss.",
+    search:"Search", near:"Near me", all:"All", news:"News", maps:"Places",
+    pin:"Save search", email:"Email results", recent:"Recent searches", saved:"Saved searches",
+    settings:"Settings", presets:"Presets", colours:"Colours", bg:"Background",
+    upload:"Upload an image", none:"No image", dim:"Dim", blur:"Blur", position:"Position",
+    fix:"Auto-fix", warn:"Low contrast — text may be hard to read.",
+    exportT:"Export theme", importT:"Import theme", reset:"Reset",
+    language:"Language", voiceLang:"Voice language", account:"Account",
+    accountNote:"Sign in arrives in the next build step. For now your theme, searches and location are saved on this device only.",
+    clearData:"Clear my data", listening:"Listening…",
+    micOff:"Voice search is not available in this browser. You can type instead.",
+    micDenied:"Microphone permission denied. You can type instead.",
+    insecure:"Voice and location need https or localhost. Serve this file with: python3 -m http.server",
+    resultsFor:"Results for", noResults:"Nothing found. Try fewer words, or widen the radius.",
+    widen:"Widen radius", directions:"Directions", understood:"Understood as",
+    protoNote:"Prototype: results come from a small built-in dataset, not a live index. Voice needs https or localhost.",
+    footerNote:"Theme, history and location stay on this device.",
+    useMyLoc:"Use my location", pickCity:"Pick a city", enterPin:"Enter PIN code",
+    pinHint:"Approximate — the first digits of a PIN map to a city.", radius:"Radius",
+    locDenied:"Location unavailable. Pick a city instead.", citySearch:"Search a city",
+    saved_on:"Saved on this device", removed:"Removed", pinned:"Search saved",
+    mailNote:"Opening your email app with these results.",
+    voiceFallback:"Sanskrit has no browser speech model, so it listens in Hindi."
+  },
+  hi:{
+    tagline:"जो औरों से छूट जाए, देखिए।",
+    search:"खोजें", near:"मेरे पास", all:"सभी", news:"समाचार", maps:"जगहें",
+    pin:"खोज सहेजें", email:"परिणाम ईमेल करें", recent:"हाल की खोजें", saved:"सहेजी खोजें",
+    settings:"सेटिंग्स", presets:"प्रीसेट", colours:"रंग", bg:"पृष्ठभूमि",
+    upload:"चित्र अपलोड करें", none:"कोई चित्र नहीं", dim:"गहराई", blur:"धुंधलापन", position:"स्थिति",
+    fix:"स्वतः ठीक करें", warn:"कम कंट्रास्ट — पढ़ने में कठिनाई हो सकती है।",
+    exportT:"थीम निर्यात करें", importT:"थीम आयात करें", reset:"रीसेट",
+    language:"भाषा", voiceLang:"आवाज़ की भाषा", account:"खाता",
+    accountNote:"साइन इन अगले चरण में आएगा। अभी आपकी थीम, खोजें और लोकेशन इसी डिवाइस पर सहेजी जाती हैं।",
+    clearData:"मेरा डेटा हटाएँ", listening:"सुन रहे हैं…",
+    micOff:"इस ब्राउज़र में आवाज़ से खोज उपलब्ध नहीं है। आप टाइप कर सकते हैं।",
+    micDenied:"माइक्रोफ़ोन की अनुमति नहीं मिली। आप टाइप कर सकते हैं।",
+    insecure:"आवाज़ और लोकेशन के लिए https या localhost चाहिए। फ़ाइल को इस तरह चलाएँ: python3 -m http.server",
+    resultsFor:"परिणाम", noResults:"कुछ नहीं मिला। कम शब्द या बड़ा दायरा आज़माएँ।",
+    widen:"दायरा बढ़ाएँ", directions:"रास्ता", understood:"समझा गया",
+    protoNote:"प्रोटोटाइप: परिणाम एक छोटे अंदरूनी डेटासेट से हैं, लाइव इंडेक्स से नहीं। आवाज़ के लिए https या localhost चाहिए।",
+    footerNote:"थीम, इतिहास और लोकेशन इसी डिवाइस पर रहते हैं।",
+    useMyLoc:"मेरी लोकेशन लें", pickCity:"शहर चुनें", enterPin:"पिन कोड डालें",
+    pinHint:"अनुमानित — पिन के पहले अंक शहर बताते हैं।", radius:"दायरा",
+    locDenied:"लोकेशन नहीं मिली। कृपया शहर चुनें।", citySearch:"शहर खोजें",
+    saved_on:"इस डिवाइस पर सहेजा", removed:"हटाया गया", pinned:"खोज सहेजी गई",
+    mailNote:"आपके ईमेल ऐप में परिणाम खोले जा रहे हैं।",
+    voiceFallback:"संस्कृत के लिए ब्राउज़र में आवाज़ मॉडल नहीं है; हिन्दी में सुन रहे हैं।"
+  },
+  mr:{
+    tagline:"जे इतरांना दिसत नाही, ते पाहा.",
+    search:"शोधा", near:"माझ्या जवळ", all:"सर्व", news:"बातम्या", maps:"ठिकाणे",
+    pin:"शोध साठवा", email:"निकाल ईमेल करा", recent:"अलीकडील शोध", saved:"साठवलेले शोध",
+    settings:"सेटिंग्ज", presets:"प्रीसेट", colours:"रंग", bg:"पार्श्वभूमी",
+    upload:"चित्र अपलोड करा", none:"चित्र नाही", dim:"गडदपणा", blur:"अस्पष्टता", position:"स्थिती",
+    fix:"स्वयं दुरुस्ती", warn:"कमी कॉन्ट्रास्ट — वाचायला अवघड होऊ शकते.",
+    exportT:"थीम निर्यात करा", importT:"थीम आयात करा", reset:"रीसेट",
+    language:"भाषा", voiceLang:"आवाजाची भाषा", account:"खाते",
+    accountNote:"साइन इन पुढील टप्प्यात येईल. सध्या तुमची थीम, शोध आणि स्थान याच डिव्हाइसवर साठवले जाते.",
+    clearData:"माझा डेटा हटवा", listening:"ऐकत आहोत…",
+    micOff:"या ब्राउझरमध्ये आवाजाने शोध उपलब्ध नाही. तुम्ही टाइप करू शकता.",
+    micDenied:"मायक्रोफोनची परवानगी नाकारली. तुम्ही टाइप करू शकता.",
+    insecure:"आवाज आणि स्थानासाठी https किंवा localhost आवश्यक आहे. फाइल अशी चालवा: python3 -m http.server",
+    resultsFor:"निकाल", noResults:"काहीही सापडले नाही. कमी शब्द किंवा मोठा परिसर वापरून पहा.",
+    widen:"परिसर वाढवा", directions:"मार्ग", understood:"असे समजले",
+    protoNote:"प्रोटोटाइप: निकाल लहान अंतर्गत डेटासेटमधून आहेत, लाइव्ह इंडेक्समधून नाही. आवाजासाठी https किंवा localhost आवश्यक.",
+    footerNote:"थीम, इतिहास आणि स्थान याच डिव्हाइसवर राहतात.",
+    useMyLoc:"माझे स्थान घ्या", pickCity:"शहर निवडा", enterPin:"पिन कोड टाका",
+    pinHint:"अंदाजे — पिनचे पहिले अंक शहर दर्शवतात.", radius:"परिसर",
+    locDenied:"स्थान मिळाले नाही. कृपया शहर निवडा.", citySearch:"शहर शोधा",
+    saved_on:"या डिव्हाइसवर साठवले", removed:"काढले", pinned:"शोध साठवला",
+    mailNote:"तुमच्या ईमेल अ‍ॅपमध्ये निकाल उघडत आहोत.",
+    voiceFallback:"संस्कृतसाठी ब्राउझरमध्ये आवाज मॉडेल नाही; हिंदीत ऐकत आहे."
+  },
+  sa:{
+    tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
+    search:"अन्विष्यतु", near:"मम समीपे", all:"सर्वम्", news:"वार्ताः", maps:"स्थानानि",
+    pin:"अन्वेषणं रक्ष", email:"फलानि ईपत्रेण प्रेषय", recent:"अद्यतनानि अन्वेषणानि", saved:"रक्षितानि अन्वेषणानि",
+    settings:"विन्यासाः", presets:"पूर्वनिर्धारिताः", colours:"वर्णाः", bg:"पृष्ठभूमिः",
+    upload:"चित्रम् आरोपय", none:"चित्रं नास्ति", dim:"गाढता", blur:"अस्पष्टता", position:"स्थितिः",
+    fix:"स्वयं संशोधय", warn:"अल्पः विरोधः — पठितुं कष्टं स्यात्।",
+    exportT:"विन्यासं निर्यातय", importT:"विन्यासम् आनय", reset:"पुनःस्थापय",
+    language:"भाषा", voiceLang:"वाचः भाषा", account:"खातम्",
+    accountNote:"प्रवेशः अग्रिमे चरणे आगमिष्यति। इदानीं विन्यासः, अन्वेषणानि, स्थानं च अस्याम् एव यन्त्रायां रक्ष्यन्ते।",
+    clearData:"मम दत्तांशं मार्जय", listening:"शृणोमि…",
+    micOff:"अस्मिन् ब्राउज़रे वाचा अन्वेषणं नास्ति। लिखितुं शक्नोति।",
+    micDenied:"ध्वनिग्राहकस्य अनुमतिः न प्राप्ता। लिखितुं शक्नोति।",
+    insecure:"वाचे स्थानाय च https अथवा localhost आवश्यकम्।",
+    resultsFor:"फलानि", noResults:"किमपि न प्राप्तम्। न्यूनानि पदानि प्रयुङ्क्ष्व।",
+    widen:"परिधिं वर्धय", directions:"मार्गः", understood:"अवगतम्",
+    protoNote:"प्रारूपम्: फलानि अन्तर्निहितदत्तांशात्, न जीवद्वारा।",
+    footerNote:"विन्यासः, इतिहासः, स्थानं च अस्याम् एव यन्त्रायां तिष्ठन्ति।",
+    useMyLoc:"मम स्थानं गृहाण", pickCity:"नगरं चिनु", enterPin:"पिन् सङ्केतं लिख",
+    pinHint:"सामान्यतः — पिन् सङ्केतस्य प्रथमाङ्काः नगरं सूचयन्ति।",
+    radius:"परिधिः", locDenied:"स्थानं न प्राप्तम्। नगरं चिनु।", citySearch:"नगरम् अन्विष्य",
+    saved_on:"अस्यां यन्त्रायां रक्षितम्", removed:"मार्जितम्", pinned:"अन्वेषणं रक्षितम्",
+    mailNote:"ईपत्रे फलानि उद्घाट्यन्ते।",
+    voiceFallback:"संस्कृतभाषायै ब्राउज़रे वाग्मॉडेलं नास्ति; हिन्दीभाषया शृणोमि।"
+  },
+  es:{
+    tagline:"Ve lo que otros no ven.",
+    search:"Buscar", near:"Cerca de mí", all:"Todo", news:"Noticias", maps:"Lugares",
+    pin:"Guardar búsqueda", email:"Enviar por correo", recent:"Búsquedas recientes", saved:"Búsquedas guardadas",
+    settings:"Ajustes", presets:"Preajustes", colours:"Colores", bg:"Fondo",
+    upload:"Subir una imagen", none:"Sin imagen", dim:"Oscurecer", blur:"Desenfoque", position:"Posición",
+    fix:"Corregir", warn:"Contraste bajo: el texto puede costar de leer.",
+    exportT:"Exportar tema", importT:"Importar tema", reset:"Restablecer",
+    language:"Idioma", voiceLang:"Idioma de voz", account:"Cuenta",
+    accountNote:"El inicio de sesión llega en el próximo paso. Por ahora tu tema, búsquedas y ubicación se guardan solo en este dispositivo.",
+    clearData:"Borrar mis datos", listening:"Escuchando…",
+    micOff:"La búsqueda por voz no está disponible en este navegador. Puedes escribir.",
+    micDenied:"Permiso de micrófono denegado. Puedes escribir.",
+    insecure:"La voz y la ubicación necesitan https o localhost.",
+    resultsFor:"Resultados de", noResults:"No se encontró nada. Prueba con menos palabras o amplía el radio.",
+    widen:"Ampliar radio", directions:"Cómo llegar", understood:"Entendido como",
+    protoNote:"Prototipo: los resultados vienen de un conjunto de datos interno, no de un índice real.",
+    footerNote:"El tema, el historial y la ubicación se quedan en este dispositivo.",
+    useMyLoc:"Usar mi ubicación", pickCity:"Elegir una ciudad", enterPin:"Introducir código PIN",
+    pinHint:"Aproximado: los primeros dígitos del PIN indican la ciudad.", radius:"Radio",
+    locDenied:"Ubicación no disponible. Elige una ciudad.", citySearch:"Buscar una ciudad",
+    saved_on:"Guardado en este dispositivo", removed:"Borrado", pinned:"Búsqueda guardada",
+    mailNote:"Abriendo tu aplicación de correo con estos resultados.",
+    voiceFallback:"No hay reconocimiento de voz para sánscrito; se escucha en hindi."
+  },
+  fr:{
+    tagline:"Voyez ce que les autres manquent.",
+    search:"Rechercher", near:"Près de moi", all:"Tout", news:"Actualités", maps:"Lieux",
+    pin:"Enregistrer la recherche", email:"Envoyer par e-mail", recent:"Recherches récentes", saved:"Recherches enregistrées",
+    settings:"Réglages", presets:"Préréglages", colours:"Couleurs", bg:"Arrière-plan",
+    upload:"Importer une image", none:"Aucune image", dim:"Assombrir", blur:"Flou", position:"Position",
+    fix:"Corriger", warn:"Contraste faible : le texte peut être difficile à lire.",
+    exportT:"Exporter le thème", importT:"Importer le thème", reset:"Réinitialiser",
+    language:"Langue", voiceLang:"Langue vocale", account:"Compte",
+    accountNote:"La connexion arrive à la prochaine étape. Pour l'instant, votre thème, vos recherches et votre position restent sur cet appareil.",
+    clearData:"Effacer mes données", listening:"Écoute…",
+    micOff:"La recherche vocale n'est pas disponible dans ce navigateur. Vous pouvez taper.",
+    micDenied:"Autorisation du micro refusée. Vous pouvez taper.",
+    insecure:"La voix et la position nécessitent https ou localhost.",
+    resultsFor:"Résultats pour", noResults:"Aucun résultat. Essayez moins de mots ou un rayon plus large.",
+    widen:"Élargir le rayon", directions:"Itinéraire", understood:"Compris comme",
+    protoNote:"Prototype : les résultats proviennent d'un jeu de données interne, pas d'un index réel.",
+    footerNote:"Le thème, l'historique et la position restent sur cet appareil.",
+    useMyLoc:"Utiliser ma position", pickCity:"Choisir une ville", enterPin:"Saisir un code PIN",
+    pinHint:"Approximatif : les premiers chiffres du PIN indiquent la ville.", radius:"Rayon",
+    locDenied:"Position indisponible. Choisissez une ville.", citySearch:"Chercher une ville",
+    saved_on:"Enregistré sur cet appareil", removed:"Effacé", pinned:"Recherche enregistrée",
+    mailNote:"Ouverture de votre application de messagerie avec ces résultats.",
+    voiceFallback:"Aucune reconnaissance vocale pour le sanskrit ; écoute en hindi."
+  },
+  ar:{
+    tagline:"أبصر ما يفوته الآخرون.",
+    search:"ابحث", near:"قريب مني", all:"الكل", news:"الأخبار", maps:"الأماكن",
+    pin:"احفظ البحث", email:"أرسل النتائج بالبريد", recent:"عمليات البحث الأخيرة", saved:"عمليات البحث المحفوظة",
+    settings:"الإعدادات", presets:"أنماط جاهزة", colours:"الألوان", bg:"الخلفية",
+    upload:"ارفع صورة", none:"بدون صورة", dim:"التعتيم", blur:"التمويه", position:"الموضع",
+    fix:"إصلاح تلقائي", warn:"تباين منخفض — قد يصعب قراءة النص.",
+    exportT:"تصدير النمط", importT:"استيراد النمط", reset:"إعادة تعيين",
+    language:"اللغة", voiceLang:"لغة الصوت", account:"الحساب",
+    accountNote:"تسجيل الدخول في الخطوة القادمة. حالياً يُحفظ النمط والبحث والموقع على هذا الجهاز فقط.",
+    clearData:"امسح بياناتي", listening:"أستمع…",
+    micOff:"البحث الصوتي غير متاح في هذا المتصفح. يمكنك الكتابة.",
+    micDenied:"تم رفض إذن الميكروفون. يمكنك الكتابة.",
+    insecure:"الصوت والموقع يحتاجان إلى https أو localhost.",
+    resultsFor:"نتائج", noResults:"لا نتائج. جرّب كلمات أقل أو نطاقاً أوسع.",
+    widen:"وسّع النطاق", directions:"الاتجاهات", understood:"فُهم كـ",
+    protoNote:"نموذج أولي: النتائج من بيانات داخلية وليست من فهرس حقيقي.",
+    footerNote:"النمط والسجل والموقع تبقى على هذا الجهاز.",
+    useMyLoc:"استخدم موقعي", pickCity:"اختر مدينة", enterPin:"أدخل رمز PIN",
+    pinHint:"تقريبي — أول أرقام الرمز تدل على المدينة.", radius:"النطاق",
+    locDenied:"الموقع غير متاح. اختر مدينة.", citySearch:"ابحث عن مدينة",
+    saved_on:"محفوظ على هذا الجهاز", removed:"تم المسح", pinned:"تم حفظ البحث",
+    mailNote:"جارٍ فتح تطبيق البريد مع هذه النتائج.",
+    voiceFallback:"لا يوجد نموذج صوتي للسنسكريت؛ الاستماع بالهندية."
+  },
+  ja:{
+    tagline:"他の人が見落とすものを見る。",
+    search:"検索", near:"現在地の近く", all:"すべて", news:"ニュース", maps:"場所",
+    pin:"検索を保存", email:"結果をメール送信", recent:"最近の検索", saved:"保存した検索",
+    settings:"設定", presets:"プリセット", colours:"色", bg:"背景",
+    upload:"画像をアップロード", none:"画像なし", dim:"暗さ", blur:"ぼかし", position:"位置",
+    fix:"自動修正", warn:"コントラストが低く、文字が読みにくい可能性があります。",
+    exportT:"テーマを書き出す", importT:"テーマを読み込む", reset:"リセット",
+    language:"言語", voiceLang:"音声の言語", account:"アカウント",
+    accountNote:"サインインは次のステップで追加します。現在、テーマ・検索・位置情報はこの端末にのみ保存されます。",
+    clearData:"データを削除", listening:"聞き取り中…",
+    micOff:"このブラウザでは音声検索を利用できません。入力してください。",
+    micDenied:"マイクの許可が拒否されました。入力してください。",
+    insecure:"音声と位置情報には https または localhost が必要です。",
+    resultsFor:"検索結果", noResults:"見つかりませんでした。語数を減らすか範囲を広げてください。",
+    widen:"範囲を広げる", directions:"経路", understood:"次のように解釈",
+    protoNote:"プロトタイプ：結果は内部データによるもので、実際のインデックスではありません。",
+    footerNote:"テーマ・履歴・位置情報はこの端末に保存されます。",
+    useMyLoc:"現在地を使う", pickCity:"都市を選ぶ", enterPin:"PINコードを入力",
+    pinHint:"おおよそ：PINの最初の数字が都市を示します。", radius:"範囲",
+    locDenied:"位置情報を取得できません。都市を選んでください。", citySearch:"都市を検索",
+    saved_on:"この端末に保存済み", removed:"削除しました", pinned:"検索を保存しました",
+    mailNote:"メールアプリで結果を開いています。",
+    voiceFallback:"サンスクリット語の音声認識はないため、ヒンディー語で聞き取ります。"
+  },
+  zh:{
+    tagline:"看见别人错过的。",
+    search:"搜索", near:"附近", all:"全部", news:"新闻", maps:"地点",
+    pin:"保存搜索", email:"邮件发送结果", recent:"最近搜索", saved:"已保存的搜索",
+    settings:"设置", presets:"预设", colours:"颜色", bg:"背景",
+    upload:"上传图片", none:"无图片", dim:"变暗", blur:"模糊", position:"位置",
+    fix:"自动修正", warn:"对比度偏低，文字可能不易阅读。",
+    exportT:"导出主题", importT:"导入主题", reset:"重置",
+    language:"语言", voiceLang:"语音语言", account:"账户",
+    accountNote:"登录功能将在下一步加入。目前主题、搜索和位置只保存在本设备上。",
+    clearData:"清除我的数据", listening:"正在聆听…",
+    micOff:"此浏览器不支持语音搜索，请改用键盘输入。",
+    micDenied:"麦克风权限被拒绝，您可以输入文字。",
+    insecure:"语音和定位需要 https 或 localhost。",
+    resultsFor:"结果", noResults:"没有找到结果。试试更少的词或扩大范围。",
+    widen:"扩大范围", directions:"路线", understood:"理解为",
+    protoNote:"原型：结果来自内置数据，并非实时索引。",
+    footerNote:"主题、历史和位置只保存在本设备上。",
+    useMyLoc:"使用我的位置", pickCity:"选择城市", enterPin:"输入邮编",
+    pinHint:"近似值：邮编前几位对应城市。", radius:"范围",
+    locDenied:"无法获取位置，请选择城市。", citySearch:"搜索城市",
+    saved_on:"已保存在本设备", removed:"已清除", pinned:"已保存搜索",
+    mailNote:"正在用邮件应用打开这些结果。",
+    voiceFallback:"浏览器没有梵语语音模型，改用印地语识别。"
+  },
+};
+/* Which speech-recognition locale each UI language maps to. Sanskrit has no
+   browser speech model, so it listens in Hindi rather than failing silently. */
+var LANG_TO_VOICE = {en:"en-IN",hi:"hi-IN",mr:"mr-IN",sa:"hi-IN",bn:"bn-IN",ta:"ta-IN",
+  te:"te-IN",gu:"gu-IN",kn:"kn-IN",ml:"ml-IN",pa:"pa-IN",es:"es-ES",fr:"fr-FR",
+  ar:"ar-SA",ja:"ja-JP",zh:"zh-CN"};
+
+var t = function(k){ return (I18N[state.lang] && I18N[state.lang][k]) || I18N.en[k] || k; };
+
+/* ============================ state ============================ */
+var DARK = {bg:"#0e1116",surface:"#161b22",text:"#e6edf3",muted:"#9aa4b2",accent:"#4c8dff",border:"#262c36"};
+var LIGHT = {bg:"#ffffff",surface:"#f4f6f9",text:"#12161c",muted:"#5b6472",accent:"#1f6feb",border:"#e3e8ee"};
+
+var PRESETS = {
+  light:{mode:"light",colors:LIGHT},
+  dark:{mode:"dark",colors:DARK},
+  midnight:{mode:"dark",colors:{bg:"#0b1020",surface:"#141a2e",text:"#e8ecf8",muted:"#98a3c4",accent:"#7c9cff",border:"#232c46"}},
+  sandstone:{mode:"light",colors:{bg:"#f8f2e7",surface:"#fffaf1",text:"#2b241c",muted:"#6b6053",accent:"#b3541e",border:"#e6dbc9"}},
+  monsoon:{mode:"dark",colors:{bg:"#0d151a",surface:"#16222a",text:"#e3eef2",muted:"#93a7b0",accent:"#33c3a6",border:"#22323b"}},
+  contrast:{mode:"dark",colors:{bg:"#000000",surface:"#0d0d0d",text:"#ffffff",muted:"#d8d8d8",accent:"#ffd400",border:"#ffffff"}}
+};
+
+var state = {
+  lang: localStorage.getItem("jatayu.lang") || "en",
+  voiceLang: localStorage.getItem("jatayu.voiceLang") || "en-IN",
+  theme: null,
+  loc: null,
+  radius: Number(localStorage.getItem("jatayu.radius") || 10),
+  history: [],
+  saved: [],
+  tab: "all",
+  results: [],
+  lastQuery: "",
+  imgURL: null
+};
+
+var $ = function(s,r){ return (r||document).querySelector(s); };
+var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function host(u){ try{ return new URL(u).hostname.replace(/^www\./,""); }catch(e){ return u; } }
+
+/* ============================ storage ============================ */
+function loadJSON(k,def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function saveJSON(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+function idb(){
+  return new Promise(function(res,rej){
+    try{
+      var r = indexedDB.open("jatayu",1);
+      r.onupgradeneeded = function(){ r.result.createObjectStore("kv"); };
+      r.onsuccess = function(){ res(r.result); };
+      r.onerror = function(){ rej(r.error); };
+    }catch(e){ rej(e); }
+  });
+}
+function kvSet(k,v){ return idb().then(function(db){ return new Promise(function(res,rej){
+  var tx=db.transaction("kv","readwrite"); tx.objectStore("kv").put(v,k);
+  tx.oncomplete=res; tx.onerror=function(){rej(tx.error);}; }); }); }
+function kvGet(k){ return idb().then(function(db){ return new Promise(function(res,rej){
+  var rq=db.transaction("kv","readonly").objectStore("kv").get(k);
+  rq.onsuccess=function(){res(rq.result);}; rq.onerror=function(){rej(rq.error);}; }); }); }
+function kvDel(k){ return idb().then(function(db){ return new Promise(function(res,rej){
+  var tx=db.transaction("kv","readwrite"); tx.objectStore("kv").delete(k);
+  tx.oncomplete=res; tx.onerror=function(){rej(tx.error);}; }); }); }
+
+/* ============================ colour maths ============================ */
+function lum(hex){
+  var c = hex.replace("#","");
+  if(c.length===3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+  var v = [0,2,4].map(function(i){ return parseInt(c.substr(i,2),16)/255; })
+    .map(function(x){ return x<=0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055,2.4); });
+  return 0.2126*v[0] + 0.7152*v[1] + 0.0722*v[2];
+}
+function ratio(a,b){ var l1=lum(a), l2=lum(b); return (Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05); }
+function mix(a,b,tt){
+  var pa=a.replace("#",""), pb=b.replace("#","");
+  if(pa.length===3) pa=pa[0]+pa[0]+pa[1]+pa[1]+pa[2]+pa[2];
+  if(pb.length===3) pb=pb[0]+pb[0]+pb[1]+pb[1]+pb[2]+pb[2];
+  var out="#";
+  for(var i=0;i<3;i++){
+    var x=parseInt(pa.substr(i*2,2),16), y=parseInt(pb.substr(i*2,2),16);
+    out += ("0"+Math.round(x+(y-x)*tt).toString(16)).slice(-2);
+  }
+  return out;
+}
+/* Auto-fix goes straight to the extreme that maximises contrast — a barely
+   passing grey still reads badly, and the user asked for readable. */
+function bestText(bg){ return lum(bg) > 0.42 ? "#000000" : "#ffffff"; }
+
+/* ============================ theme engine ============================ */
+function defaultTheme(){
+  return {version:1,mode:"system",preset:"light",colors:Object.assign({},LIGHT),
+          background:{kind:"color",dim:45,blur:0,position:"center",imageId:null}};
+}
+function effectiveColors(){
+  var th=state.theme;
+  if(th.preset==="custom") return th.colors;
+  var dark = th.mode==="dark" || (th.mode==="system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  if(th.preset==="light" || th.preset==="dark"){
+    return dark ? Object.assign({},DARK) : Object.assign({},LIGHT);
+  }
+  return Object.assign({}, (PRESETS[th.preset]||PRESETS.light).colors);
+}
+function applyTheme(){
+  var th=state.theme, c=effectiveColors(), root=document.documentElement;
+  root.style.setProperty("--bg",c.bg);
+  root.style.setProperty("--surface",c.surface);
+  root.style.setProperty("--text",c.text);
+  root.style.setProperty("--muted",c.muted);
+  root.style.setProperty("--accent",c.accent);
+  root.style.setProperty("--border",c.border);
+  var bg=th.background||{};
+  root.style.setProperty("--bg-dim",(bg.dim||0)/100);
+  root.style.setProperty("--bg-blur",(bg.blur||0)+"px");
+  root.style.setProperty("--bg-pos",bg.position||"center");
+  var dark = lum(c.bg) < 0.4;
+  root.dataset.mode = dark ? "dark" : "light";
+  var mt=document.querySelector('meta[name="theme-color"]'); if(mt) mt.setAttribute("content",c.bg);
+  if(bg.kind==="image" && state.imgURL){
+    document.body.classList.add("has-img");
+    root.style.setProperty("--bg-img","url('"+state.imgURL+"')");
+  }else{
+    document.body.classList.remove("has-img");
+  }
+  saveJSON("jatayu.theme", th);
+  renderSwatches();
+  checkContrast();
+}
+function setPreset(name){
+  state.theme.preset=name;
+  var p=PRESETS[name];
+  state.theme.mode = p ? (p.mode==="dark"?"dark":"light") : state.theme.mode;
+  if(p) state.theme.colors=Object.assign({},p.colors);
+  applyTheme();
+}
+function renderSwatches(){
+  var c=effectiveColors(), box=$("#swatches");
+  var fields=[["bg","Background"],["surface","Surface"],["text","Text"],["muted","Secondary"],["accent","Accent"],["border","Border"]];
+  box.innerHTML = fields.map(function(f){
+    return '<div class="swatchrow"><span>'+f[1]+'</span>'+
+      '<input type="color" data-k="'+f[0]+'" value="'+c[f[0]]+'" aria-label="'+f[1]+'"></div>';
+  }).join("");
+  $$('#swatches input[type=color]').forEach(function(inp){
+    inp.addEventListener("input",function(){
+      state.theme.preset="custom";
+      state.theme.colors=Object.assign({},effectiveColors());
+      state.theme.colors[inp.dataset.k]=inp.value;
+      applyTheme();
+    });
+  });
+}
+function checkContrast(){
+  var c=effectiveColors(), slot=$("#warnSlot"), r=ratio(c.text,c.bg);
+  if(r>=4.5){ slot.innerHTML='<p class="hint">Contrast '+r.toFixed(1)+':1 — passes AA.</p>'; return; }
+  slot.innerHTML='<div class="warnbox">'+esc(t("warn"))+' ('+r.toFixed(1)+':1) '+
+    '<div class="btnrow"><button class="btn primary" id="autoFix">'+esc(t("fix"))+'</button></div></div>';
+  $("#autoFix").addEventListener("click",function(){
+    state.theme.preset="custom";
+    var cc=Object.assign({},effectiveColors());
+    cc.text=bestText(cc.bg,7);
+    cc.muted=mix(cc.text,cc.bg,0.14);
+    state.theme.colors=cc;
+    applyTheme();
+  });
+}
+
+/* ============================ data ============================ */
+var CITIES = [
+  ["Mumbai","मुंबई","Maharashtra",19.076,72.8777],["Delhi","दिल्ली","Delhi",28.6139,77.209],
+  ["Bengaluru","बेंगलुरु","Karnataka",12.9716,77.5946],["Hyderabad","हैदराबाद","Telangana",17.385,78.4867],
+  ["Chennai","चेन्नई","Tamil Nadu",13.0827,80.2707],["Kolkata","कोलकाता","West Bengal",22.5726,88.3639],
+  ["Pune","पुणे","Maharashtra",18.5204,73.8567],["Ahmedabad","अहमदाबाद","Gujarat",23.0225,72.5714],
+  ["Jaipur","जयपुर","Rajasthan",26.9124,75.7873],["Surat","सूरत","Gujarat",21.1702,72.8311],
+  ["Lucknow","लखनऊ","Uttar Pradesh",26.8467,80.9462],["Kanpur","कानपुर","Uttar Pradesh",26.4499,80.3319],
+  ["Nagpur","नागपूर","Maharashtra",21.1458,79.0882],["Indore","इंदौर","Madhya Pradesh",22.7196,75.8577],
+  ["Thane","ठाणे","Maharashtra",19.2183,72.9781],["Bhopal","भोपाल","Madhya Pradesh",23.2599,77.4126],
+  ["Visakhapatnam","विशाखापत्तनम","Andhra Pradesh",17.6868,83.2185],["Patna","पटना","Bihar",25.5941,85.1376],
+  ["Vadodara","वडोदरा","Gujarat",22.3072,73.1812],["Nashik","नाशिक","Maharashtra",19.9975,73.7898],
+  ["Agra","आगरा","Uttar Pradesh",27.1767,78.0081],["Varanasi","वाराणसी","Uttar Pradesh",25.3176,82.9739],
+  ["Amritsar","अमृतसर","Punjab",31.634,74.8723],["Ranchi","राँची","Jharkhand",23.3441,85.3096],
+  ["Coimbatore","कोयंबटूर","Tamil Nadu",11.0168,76.9558],["Kochi","कोच्चि","Kerala",9.9312,76.2673],
+  ["Thiruvananthapuram","तिरुवनंतपुरम","Kerala",8.5241,76.9366],["Guwahati","गुवाहाटी","Assam",26.1445,91.7362],
+  ["Chandigarh","चंडीगढ़","Chandigarh",30.7333,76.7794],["Bhubaneswar","भुवनेश्वर","Odisha",20.2961,85.8245],
+  ["Dehradun","देहरादून","Uttarakhand",30.3165,78.0322],["Raipur","रायपूर","Chhattisgarh",21.2514,81.6296],
+  ["Mysuru","मैसूरु","Karnataka",12.2958,76.6394],["Madurai","मदुरै","Tamil Nadu",9.9252,78.1198],
+  ["Jodhpur","जोधपुर","Rajasthan",26.2389,73.0243],["Udaipur","उदयपूर","Rajasthan",24.5854,73.7125],
+  ["Vijayawada","विजयवाड़ा","Andhra Pradesh",16.5062,80.648],["Ludhiana","लुधियाना","Punjab",30.901,75.8573],
+  ["Jabalpur","जबलपुर","Madhya Pradesh",23.1815,79.9864],["Siliguri","सिलीगुड़ी","West Bengal",26.7271,88.3953]
+];
+
+var PINMAP = {"110":"Delhi","400":"Mumbai","560":"Bengaluru","500":"Hyderabad","600":"Chennai","700":"Kolkata",
+  "411":"Pune","380":"Ahmedabad","302":"Jaipur","395":"Surat","226":"Lucknow","208":"Kanpur","440":"Nagpur",
+  "452":"Indore","462":"Bhopal","530":"Visakhapatnam","800":"Patna","390":"Vadodara","201":"Ghaziabad",
+  "141":"Ludhiana","282":"Agra","422":"Nashik","250":"Meerut","221":"Varanasi","143":"Amritsar","834":"Ranchi",
+  "641":"Coimbatore","482":"Jabalpur","520":"Vijayawada","342":"Jodhpur","625":"Madurai","492":"Raipur",
+  "160":"Chandigarh","781":"Guwahati","570":"Mysuru","682":"Kochi","695":"Thiruvananthapuram","248":"Dehradun",
+  "751":"Bhubaneswar","313":"Udaipur"};
+
+var DATA = [
+  {title:"IRCTC — Indian Railway Catering and Tourism Corporation",url:"https://www.irctc.co.in/",source:"irctc.co.in",type:"web",keywords:"train ticket railway booking irctc travel",
+   snippet:"Book train tickets, check PNR status, and view live train running status across the Indian Railways network."},
+  {title:"UPI payments: how they work and which apps to use",url:"https://www.npci.org.in/what-we-do/upi/product-overview",source:"npci.org.in",type:"web",keywords:"upi payment phonepe gpay paytm money transfer",
+   snippet:"Unified Payments Interface lets you pay from any bank account using a UPI ID or QR code. Free for personal use, settled in seconds."},
+  {title:"Aadhaar — update details, download e-Aadhaar",url:"https://uidai.gov.in/",source:"uidai.gov.in",type:"web",keywords:"aadhaar uidai update address download",
+   snippet:"Official UIDAI portal for Aadhaar enrolment, address updates and downloading a masked e-Aadhaar PDF."},
+  {title:"Best budget laptops under ₹40,000 in India (2026)",url:"https://example.in/laptops-under-40000",source:"Tech Guide India",type:"web",keywords:"laptop sasta sasta laptop cheap computer price",
+   snippet:"Eight laptops under ₹40,000 tested for battery life, keyboard and service network in India. Prices include GST as of this month."},
+  {title:"सस्ते स्मार्टफोन 2026: ₹12,000 से कम के बेहतरीन विकल्प",url:"https://example.in/hindi/phones",source:"हिन्दी टेक",type:"web",keywords:"सस्ता फोन मोबाइल smartphone phone mobile sasta",
+   snippet:"₹12,000 से कम में अच्छी बैटरी और कैमरा वाले फोन। भारत में सर्विस सेंटर की उपलब्धता भी देखी गई है।"},
+  {title:"मुंबईत जेवण्यासाठी सर्वोत्तम ठिकाणे",url:"https://example.in/marathi/mumbai-food",source:"मराठी मार्गदर्शक",type:"web",keywords:"मुंबई जेवण हॉटेल restaurant food mumbai javal",
+   snippet:"मुंबईतील वडा पाव, मिसळ आणि सीफूडसाठी प्रसिद्ध हॉटेल्सची यादी, किंमती आणि जवळचे पर्याय."},
+  {title:"How to file ITR online on the income tax portal",url:"https://www.incometax.gov.in/",source:"incometax.gov.in",type:"web",keywords:"itr tax return income tax filing",
+   snippet:"Step-by-step filing of income tax returns, e-verification options, and refund tracking on the official e-filing portal."},
+  {title:"Weather in India: today's forecast and IMD alerts",url:"https://mausam.imd.gov.in/",source:"mausam.imd.gov.in",type:"news",keywords:"weather mausam rain forecast monsoon temperature",
+   snippet:"District-level forecasts, rainfall warnings and cyclone alerts issued by the India Meteorological Department."},
+  {title:"Rupee slips against dollar as crude prices rise",url:"https://example.in/news/rupee",source:"Market Wire",type:"news",keywords:"rupee dollar sensex nifty market news share",
+   snippet:"The rupee weakened in early trade, tracking a rise in crude oil prices. Sensex and Nifty opened flat."},
+  {title:"Monsoon covers most of Maharashtra, IMD says",url:"https://example.in/news/monsoon",source:"Weather Desk",type:"news",keywords:"monsoon maharashtra rain news mumbai pune",
+   snippet:"The southwest monsoon has advanced across most of Maharashtra, with heavy rainfall expected in the Konkan belt over the next 48 hours."},
+  {title:"हिन्दी में टाइप कैसे करें: फ़ोनेटिक और इनस्क्रिप्ट की पूरी गाइड",url:"https://example.in/hindi/typing",source:"हिन्दी गाइड",type:"web",keywords:"हिन्दी टाइपिंग typing hindi keyboard transliteration",
+   snippet:"फ़ोनेटिक कीबोर्ड से हिन्दी में टाइप करने का आसान तरीका, साथ ही मोबाइल पर स्वाइप टाइपिंग के सुझाव।"},
+  {title:"PM Kisan Samman Nidhi: beneficiary status check",url:"https://pmkisan.gov.in/",source:"pmkisan.gov.in",type:"web",keywords:"pm kisan scheme subsidy farmer status",
+   snippet:"Check beneficiary status, instalment history and correct your details for the PM-KISAN income support scheme."},
+  {title:"Tata Punch vs Maruti Swift: which small car makes sense in 2026",url:"https://example.in/cars/punch-vs-swift",source:"Auto India",type:"web",keywords:"car gadi gadi price tata maruti swift punch",
+   snippet:"A practical comparison of running costs, service intervals and resale value for two of India's most popular small cars."},
+  {title:"मराठी बातम्या: आजच्या मुख्य घडामोडी",url:"https://example.in/marathi/news",source:"मराठी बातम्या",type:"news",keywords:"मराठी बातम्या news marathi maharashtra",
+   snippet:"राज्यातील ताज्या घडामोडी, राजकारण, क्रीडा आणि व्यापार यांचे थोडक्यात अपडेट."},
+  {title:"Udyam registration for small businesses",url:"https://udyamregistration.gov.in/",source:"udyamregistration.gov.in",type:"web",keywords:"udyam msme business registration small",
+   snippet:"Free online registration for micro, small and medium enterprises. Aadhaar and PAN are required."},
+  {title:"खाने का ऑर्डर: आपके इलाके में सबसे तेज़ डिलीवरी",url:"https://example.in/hindi/food",source:"फ़ूड गाइड",type:"web",keywords:"खाना khana food delivery order restaurant paas",
+   snippet:"आपके पास के रेस्टोरेंट, औसत डिलीवरी समय और शुल्क की तुलना एक ही जगह।"}
+];
+
+var PLACES = [
+  {title:"Aaram Medical & General Store",url:"https://maps.example.in/place/1",source:"Chemist",type:"place",keywords:"medical chemist dawai medicine store pharmacy",lat:19.1197,lng:72.8464,snippet:"Chemist and general store. Open until 11 pm, home delivery within 3 km."},
+  {title:"Chai Tapri",url:"https://maps.example.in/place/2",source:"Cafe",type:"place",keywords:"chai tea cafe khana food",lat:19.1364,lng:72.8296,snippet:"Cutting chai, poha and bun maska. Cash and UPI. Seats 12."},
+  {title:"Shree Ganesh Veg Restaurant",url:"https://maps.example.in/place/3",source:"Restaurant",type:"place",keywords:"restaurant khana food lunch thali veg",lat:19.1075,lng:72.8372,snippet:"Maharashtrian thali, ₹180. Pure veg, family seating, open 11 am to 11 pm."},
+  {title:"Apna Bazaar Supermarket",url:"https://maps.example.in/place/4",source:"Grocery",type:"place",keywords:"grocery kirana supermarket store shopping kapde",lat:19.1521,lng:72.8498,snippet:"Daily groceries, fresh vegetables and household items. Card and UPI accepted."},
+  {title:"Smile Care Dental Clinic",url:"https://maps.example.in/place/5",source:"Clinic",type:"place",keywords:"dentist dental clinic doctor dant",lat:19.1288,lng:72.8691,snippet:"General dentistry, extractions and cleaning. Appointments by phone, walk-ins before noon."},
+  {title:"SBI ATM",url:"https://maps.example.in/place/6",source:"ATM",type:"place",keywords:"atm bank cash paisa",lat:19.1429,lng:72.8231,snippet:"24-hour ATM, cash withdrawal and cardless withdrawal via UPI."},
+  {title:"FitZone Gym & Fitness",url:"https://maps.example.in/place/7",source:"Gym",type:"place",keywords:"gym fitness workout exercise",lat:19.0982,lng:72.8576,snippet:"Monthly membership ₹1,400. Free trial session, trainers available 6-10 am."},
+  {title:"Laxmi Petrol Pump",url:"https://maps.example.in/place/8",source:"Fuel",type:"place",keywords:"petrol pump diesel fuel cng",lat:19.1631,lng:72.8402,snippet:"Petrol, diesel and CNG. Air and tyre service available."},
+  {title:"Shree Kirana & General Store",url:"https://maps.example.in/place/9",source:"Grocery",type:"place",keywords:"kirana grocery store shop dukaan",lat:19.1122,lng:72.8901,snippet:"Neighbourhood kirana, home delivery on orders above ₹200."},
+  {title:"City Diagnostic Lab",url:"https://maps.example.in/place/10",source:"Lab",type:"place",keywords:"lab test blood diagnostic doctor",lat:19.1555,lng:72.8622,snippet:"Blood tests and health packages, reports by WhatsApp in 24 hours."}
+];
+
+/* The same set of place types is cloned around ten Indian cities so the
+   location filter demonstrably works wherever the user actually is. */
+var CITY_SEEDS = [["Mumbai",19.076,72.8777],["Delhi",28.6139,77.209],["Bengaluru",12.9716,77.5946],
+  ["Pune",18.5204,73.8567],["Hyderabad",17.385,78.4867],["Chennai",13.0827,80.2707],
+  ["Kolkata",22.5726,88.3639],["Ahmedabad",23.0225,72.5714],["Jaipur",26.9124,75.7873],
+  ["Lucknow",26.8467,80.9462]];
+var ALLPLACES = [];
+CITY_SEEDS.forEach(function(cs){
+  PLACES.forEach(function(p,i){
+    ALLPLACES.push(Object.assign({},p,{
+      title: p.title+" — "+cs[0],
+      url: p.url+"?city="+encodeURIComponent(cs[0]),
+      lat: cs[1] + ((i%5)-2)*0.012 + (i%3)*0.004,
+      lng: cs[2] + (((i*7)%5)-2)*0.013 + (i%2)*0.005
+    }));
+  });
+});
+
+var LOCAL_RE = /\b(near|nearby|near me|around|paas|pas|najik|nazdeek|javal|जवळ|पास|आसपास|जवळचे)\b|पास|जवळ|आसपास/i;
+var ROMAN = {sasta:"सस्ता",sasti:"सस्ती",paas:"पास",pas:"पास",najik:"जवळ",nazdeek:"पास",javal:"जवळ",
+  khana:"खाना",chai:"चाय",dawai:"दवाई",dukan:"दुकान",dukaan:"दुकान",gadi:"गाड़ी",gaadi:"गाड़ी",
+  ghar:"घर",kapde:"कपड़े",acha:"अच्छा",accha:"अच्छा",paisa:"पैसा",kaam:"काम",naukri:"नौकरी",
+  mumbai:"मुंबई",pune:"पुणे",dilli:"दिल्ली",madhe:"मध्ये",sarv:"सर्व"};
+
+/* ============================ search ============================ */
+function haversine(a,b){
+  var R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180;
+  var la1=a.lat*Math.PI/180, la2=b.lat*Math.PI/180;
+  var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+}
+function isLocal(q){ return LOCAL_RE.test(q); }
+
+var STRONG = {sasta:1,sasti:1,paas:1,pas:1,najik:1,nazdeek:1,javal:1,dawai:1,dukan:1,dukaan:1,
+  khana:1,kapde:1,acha:1,accha:1,madhe:1,naukri:1,gaadi:1,gadi:1,ghar:1,paisa:1,kaam:1};
+
+/* Returns {text, count, strong} — only surface the transliteration when it is
+   actually telling the user something (two mapped words, or a clearly
+   Hindi/Marathi word), so a plain English query is left alone. */
+function transliterate(q){
+  var words=q.split(/\s+/), count=0, strong=false;
+  var out=words.map(function(w){
+    var key=w.toLowerCase().replace(/[^a-z]/g,"");
+    if(ROMAN[key]){ count++; if(STRONG[key]) strong=true; return ROMAN[key]; }
+    return w;
+  });
+  return {text: out.join(" "), count: count, strong: strong};
+}
+
+function synth(q){
+  var s=q.trim();
+  return [
+    {title:s+" — Wikipedia",url:"https://en.wikipedia.org/wiki/Special:Search?search="+encodeURIComponent(s),
+     source:"Wikipedia",type:"web",keywords:"",snippet:"An overview of "+s+", with history, references and related topics from the free encyclopedia."},
+    {title:"Best "+s+" options in India — a practical guide",url:"https://example.in/guide?q="+encodeURIComponent(s),
+     source:"India Guide",type:"web",keywords:"",snippet:"What to look for when choosing "+s+" in India: prices in rupees, warranty, service network and local availability."},
+    {title:s+": latest news and updates",url:"https://example.in/news?q="+encodeURIComponent(s),
+     source:"Daily Desk",type:"news",keywords:"",snippet:"Recent coverage and analysis on "+s+" from across the country."}
+  ];
+}
+
+function runSearch(q){
+  var terms=q.toLowerCase().split(/\s+/).filter(function(x){ return x.length>1; });
+  var local=isLocal(q);
+  var web=DATA.filter(function(d){
+    var hay=(d.title+" "+d.snippet+" "+d.keywords).toLowerCase();
+    return terms.some(function(term){ return hay.indexOf(term)>-1; });
+  });
+  var places=ALLPLACES.map(function(p){
+    var o=Object.assign({},p);
+    if(state.loc) o.distanceKm=haversine(state.loc,p);
+    var hay=(p.title+" "+p.keywords+" "+p.snippet).toLowerCase();
+    o.score=terms.filter(function(term){ return hay.indexOf(term)>-1; }).length;
+    return o;
+  });
+  if(state.loc){
+    /* A relevant place beats a nearer irrelevant one: match count first,
+       distance second. */
+    places=places.filter(function(p){ return p.distanceKm<=state.radius; })
+                 .sort(function(a,b){ return (b.score-a.score) || (a.distanceKm-b.distanceKm); });
+  }else{
+    places=places.filter(function(p){ return p.score>0; }).slice(0,4);
+    if(!places.length) places=ALLPLACES.slice(0,4);
+  }
+  var out;
+  if(local && state.loc) out = places.concat(web.slice(0,4));
+  else if(local) out = web.concat(places.slice(0,4));
+  else out = web.concat(places.slice(0,3));
+  if(out.length<4) out = out.concat(synth(q));
+  if(state.tab==="news") out=out.filter(function(r){ return r.type==="news"; });
+  if(state.tab==="place") out=out.filter(function(r){ return r.type==="place"; });
+  return out;
+}
+
+/* ============================ render ============================ */
+function applyI18n(){
+  $$("[data-i18n]").forEach(function(el){ el.textContent=t(el.dataset.i18n); });
+  $("#q").placeholder=t("search")+"…";
+  document.documentElement.lang = state.lang;
+  document.documentElement.dir = (state.lang==="ar") ? "rtl" : "ltr";
+  $("#langSel").value = state.lang;
+  $("#voiceLang").value = state.voiceLang;
+  $("#voiceLangLabel").textContent = state.voiceLang;
+  $("#cityFilter").placeholder=t("citySearch");
+  $("#pinInput").placeholder="400053";
+}
+function renderResults(){
+  var list=$("#list"), out=state.results;
+  $("#qline").textContent = t("resultsFor")+': "'+state.lastQuery+'" · '+out.length;
+  if(!out.length){
+    list.innerHTML='<div class="empty">'+esc(t("noResults"))+'</div>';
+    return;
+  }
+  list.innerHTML = out.map(function(r){
+    var dist = (typeof r.distanceKm==="number") ? '<span class="badge">'+r.distanceKm.toFixed(1)+' km</span>' : "";
+    var dir = (typeof r.lat==="number") ?
+      '<a href="https://www.google.com/maps/dir/?api=1&destination='+r.lat+','+r.lng+'" target="_blank" rel="noopener">'+esc(t("directions"))+'</a>' : "";
+    return '<article class="card">'+
+      '<div class="meta"><span class="fav"></span><span>'+esc(r.source)+'</span><span>·</span><span>'+esc(host(r.url))+'</span></div>'+
+      '<h3><a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.title)+'</a></h3>'+
+      '<p>'+esc(r.snippet)+'</p>'+
+      '<div class="row">'+dist+dir+'</div>'+
+    '</article>';
+  }).join("");
+}
+function showHome(){
+  $("#home").hidden=false; $("#results").hidden=true;
+  document.title="Jatayu — see what others miss";
+}
+function showResults(){
+  $("#home").hidden=true; $("#results").hidden=false;
+}
+function renderLocBar(){
+  var bar=$("#locBar");
+  if(!state.loc){ bar.hidden=true; return; }
+  bar.hidden=false;
+  $("#locChip").innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px;margin-right:5px"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>'+
+    esc(state.loc.name)+" · "+state.radius+" km";
+  $("#widenBtn").hidden = state.radius>=50;
+}
+function renderHistory(){
+  var box=$("#recentBox"), list=$("#recentList");
+  if(!state.history.length){ box.hidden=true; return; }
+  box.hidden=false;
+  list.innerHTML = state.history.slice(0,8).map(function(h){
+    return '<button class="chip" data-q="'+esc(h)+'">'+esc(h)+'</button>';
+  }).join("");
+  $$('#recentList .chip').forEach(function(b){
+    b.addEventListener("click",function(){ $("#q").value=b.dataset.q; doSearch(b.dataset.q); });
+  });
+}
+function renderSaved(){
+  var box=$("#savedBox"), list=$("#savedList");
+  if(!state.saved.length){ box.hidden=true; return; }
+  box.hidden=false;
+  list.innerHTML = state.saved.map(function(s,i){
+    return '<button class="chip" data-q="'+esc(s)+'">'+esc(s)+' <span class="x" data-del="'+i+'">×</span></button>';
+  }).join("");
+  $$('#savedList .chip').forEach(function(b){
+    b.addEventListener("click",function(ev){
+      if(ev.target.dataset.del!==undefined){
+        state.saved.splice(Number(ev.target.dataset.del),1);
+        saveJSON("jatayu.saved",state.saved); renderSaved(); return;
+      }
+      $("#q").value=b.dataset.q; doSearch(b.dataset.q);
+    });
+  });
+}
+
+/* ============================ actions ============================ */
+function doSearch(q){
+  q=(q||"").trim();
+  if(!q) return;
+  state.lastQuery=q;
+  var trans = transliterate(q);
+  var u=$("#understood");
+  if(trans && (trans.count>=2 || trans.strong) && /^[a-z0-9\s]+$/i.test(q)){
+    u.hidden=false; u.textContent = t("understood")+": "+trans.text;
+  }else{ u.hidden=true; }
+
+  state.results = runSearch(q);
+  state.history = [q].concat(state.history.filter(function(h){ return h!==q; })).slice(0,20);
+  saveJSON("jatayu.history",state.history);
+  showResults(); renderResults(); renderLocBar(); renderHistory();
+  document.title = q+" — Jatayu";
+  window.scrollTo({top:0,behavior:"instant"});
+  $("#q").blur();
+}
+
+function setLocation(loc){
+  state.loc=loc;
+  saveJSON("jatayu.loc",loc);
+  renderLocBar();
+  $("#status").textContent="";
+  $("#sheetStatus").textContent="";
+  closeSheet();
+  if(state.lastQuery) doSearch(state.lastQuery);
+}
+
+/* ============================ voice ============================ */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var recog=null, listening=false;
+
+function secureOK(){ return location.protocol==="https:" || location.hostname==="localhost" || location.hostname==="127.0.0.1"; }
+
+function setStatus(msg, isErr){
+  var s=$("#status"); s.textContent=msg||""; s.className="status"+(isErr?" err":"");
+}
+
+function toggleMic(){
+  if(!SR){ setStatus(t("micOff"),true); return; }
+  if(!secureOK()){ setStatus(t("insecure"),true); return; }
+  if(listening){ recog && recog.stop(); return; }
+  try{
+    recog = new SR();
+  }catch(e){ setStatus(t("micOff"),true); return; }
+  recog.lang = state.voiceLang;
+  recog.interimResults = true;
+  recog.continuous = false;
+  recog.maxAlternatives = 1;
+  var mic=$("#micBtn");
+  recog.onstart=function(){
+    listening=true; mic.classList.add("listening"); mic.setAttribute("aria-pressed","true");
+    setStatus(t("listening"),false);
+  };
+  recog.onresult=function(ev){
+    var interim="", final="";
+    for(var i=ev.resultIndex;i<ev.results.length;i++){
+      var r=ev.results[i];
+      if(r.isFinal) final += r[0].transcript;
+      else interim += r[0].transcript;
+    }
+    if(interim) $("#q").value=interim;
+    if(final){
+      $("#q").value=final.trim();
+      if(state.voiceLang==="en-IN"){ doSearch($("#q").value); }
+      else { setStatus("",false); $("#q").focus(); }
+    }
+  };
+  recog.onerror=function(ev){
+    listening=false; mic.classList.remove("listening"); mic.setAttribute("aria-pressed","false");
+    if(ev.error==="not-allowed"||ev.error==="service-not-allowed") setStatus(t("micDenied"),true);
+    else if(ev.error==="no-speech") setStatus("No speech detected. Try again.",true);
+    else setStatus(t("micOff"),true);
+  };
+  recog.onend=function(){
+    listening=false; mic.classList.remove("listening"); mic.setAttribute("aria-pressed","false");
+    if($("#status").textContent===t("listening")) setStatus("",false);
+  };
+  try{ recog.start(); }catch(e){ setStatus(t("micOff"),true); }
+}
+
+/* ============================ email ============================ */
+function emailResults(){
+  var out=state.results.slice(0,10);
+  if(!out.length) return;
+  var lines = out.map(function(r,i){
+    return (i+1)+". "+r.title+"\n   "+r.url+"\n   "+r.snippet+"\n";
+  }).join("\n");
+  var body = t("resultsFor")+': "'+state.lastQuery+'"\n'+
+    (state.loc ? "Near: "+state.loc.name+" ("+state.radius+" km)\n" : "")+
+    "\n"+lines+"\n— Sent from Jatayu (prototype)";
+  var href="mailto:?subject="+encodeURIComponent("Jatayu: "+state.lastQuery)+"&body="+encodeURIComponent(body);
+  window.location.href=href;
+  setStatus(t("mailNote"),false);
+}
+
+/* ============================ drawer / sheet ============================ */
+function openDrawer(){ $("#dscrim").classList.add("show"); $("#drawer").classList.add("open"); }
+function closeDrawer(){ $("#dscrim").classList.remove("show"); $("#drawer").classList.remove("open"); }
+function openSheet(){ $("#scrim").classList.add("show"); $("#sheet").classList.add("open"); renderCityList(""); }
+function closeSheet(){ $("#scrim").classList.remove("show"); $("#sheet").classList.remove("open"); }
+
+function renderCityList(filter){
+  var f=(filter||"").toLowerCase();
+  var rows=CITIES.filter(function(c){
+    return !f || c[0].toLowerCase().indexOf(f)>-1 || c[1].indexOf(f)>-1 || c[2].toLowerCase().indexOf(f)>-1;
+  }).slice(0,40);
+  $("#cityList").innerHTML = rows.map(function(c,i){
+    return '<button data-i="'+CITIES.indexOf(c)+'">'+esc(c[0])+" · "+esc(c[1])+' <span style="color:var(--muted);font-size:12px">'+esc(c[2])+'</span></button>';
+  }).join("") || '<div class="empty">—</div>';
+  $$("#cityList button").forEach(function(b){
+    b.addEventListener("click",function(){
+      var c=CITIES[Number(b.dataset.i)];
+      setLocation({name:c[0]+", "+c[2],lat:c[3],lng:c[4],source:"city"});
+    });
+  });
+}
+
+/* ============================ init ============================ */
+function init(){
+  state.theme = loadJSON("jatayu.theme", null) || defaultTheme();
+  state.history = loadJSON("jatayu.history", []);
+  state.saved = loadJSON("jatayu.saved", []);
+  state.loc = loadJSON("jatayu.loc", null);
+  if(!PRESETS[state.theme.preset]) state.theme.preset="light";
+
+  applyI18n();
+  applyTheme();
+  renderHistory(); renderSaved(); renderLocBar();
+
+  /* presets */
+  $("#presets").innerHTML = Object.keys(PRESETS).map(function(k){
+    var p=PRESETS[k].colors;
+    return '<button class="preset" data-p="'+k+'"><i style="background:linear-gradient(90deg,'+p.bg+','+p.surface+','+p.accent+')"></i>'+k+'</button>';
+  }).join("");
+  $$("#presets .preset").forEach(function(b){
+    b.addEventListener("click",function(){ setPreset(b.dataset.p); });
+  });
+
+  /* theme toggle */
+  $("#themeBtn").addEventListener("click",function(){
+    var dark = document.documentElement.dataset.mode==="dark";
+    setPreset(dark ? "light" : "dark");
+  });
+
+  /* search */
+  $("#searchForm").addEventListener("submit",function(e){ e.preventDefault(); doSearch($("#q").value); });
+  $("#q").addEventListener("keydown",function(e){ if(e.key==="Escape"){ $("#q").value=""; } });
+
+  /* mic */
+  $("#micBtn").addEventListener("click",toggleMic);
+  if(!SR) $("#micBtn").style.display="none";
+
+  /* language */
+  $("#langSel").addEventListener("change",function(){
+    state.lang=this.value;
+    localStorage.setItem("jatayu.lang",state.lang);
+    setStatus("",false);
+    var mapped = LANG_TO_VOICE[state.lang];
+    if(mapped && state.voiceLang.split("-")[0]!==state.lang){
+      state.voiceLang = mapped;
+      localStorage.setItem("jatayu.voiceLang",state.voiceLang);
+    }
+    if(state.lang==="sa") setStatus(t("voiceFallback"),false);
+    applyI18n(); renderLocBar();
+    if(!$("#results").hidden && state.lastQuery) renderResults();
+    renderHistory(); renderSaved();
+  });
+
+  /* voice language */
+  $("#voiceLang").addEventListener("change",function(){
+    state.voiceLang=this.value;
+    localStorage.setItem("jatayu.voiceLang",state.voiceLang);
+    $("#voiceLangLabel").textContent=state.voiceLang;
+  });
+  $("#voiceLangChip").addEventListener("click",function(){
+    var order=["en-IN","hi-IN","mr-IN","bn-IN","ta-IN","te-IN","gu-IN","kn-IN","ml-IN","pa-IN","or-IN","ur-IN"];
+    var i=order.indexOf(state.voiceLang);
+    state.voiceLang=order[(i+1)%order.length];
+    localStorage.setItem("jatayu.voiceLang",state.voiceLang);
+    $("#voiceLangLabel").textContent=state.voiceLang;
+    $("#voiceLang").value=state.voiceLang;
+  });
+
+  /* tabs */
+  $$("#tabs button").forEach(function(b){
+    b.addEventListener("click",function(){
+      $$("#tabs button").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on"); state.tab=b.dataset.tab;
+      if(state.lastQuery){ state.results=runSearch(state.lastQuery); renderResults(); }
+    });
+  });
+
+  /* pin + email */
+  $("#pinBtn").addEventListener("click",function(){
+    if(!state.lastQuery) return;
+    if(state.saved.indexOf(state.lastQuery)===-1) state.saved.unshift(state.lastQuery);
+    saveJSON("jatayu.saved",state.saved); renderSaved(); setStatus(t("pinned"),false);
+  });
+  $("#emailBtn").addEventListener("click",emailResults);
+
+  /* location */
+  $("#nearChip").addEventListener("click",openSheet);
+  $("#locChip").addEventListener("click",openSheet);
+  $("#scrim").addEventListener("click",closeSheet);
+  $("#cityFilter").addEventListener("input",function(){ renderCityList(this.value); });
+  $("#pinToggle").addEventListener("click",function(){ $("#pinField").hidden=!$("#pinField").hidden; });
+  $("#pinGo").addEventListener("click",function(){
+    var pin=($("#pinInput").value||"").trim();
+    if(!/^\d{6}$/.test(pin)){ $("#sheetStatus").textContent="Enter a 6-digit PIN code."; return; }
+    var city=PINMAP[pin.slice(0,3)];
+    if(!city){ $("#sheetStatus").textContent="PIN not in the prototype dataset."; return; }
+    var row=CITIES.filter(function(c){ return c[0]===city; })[0];
+    if(row) setLocation({name:"PIN "+pin+" (near "+city+")",lat:row[3],lng:row[4],source:"pin"});
+  });
+  $("#geoBtn").addEventListener("click",function(){
+    if(!navigator.geolocation){ $("#sheetStatus").textContent=t("locDenied"); return; }
+    if(!secureOK()){ $("#sheetStatus").textContent=t("insecure"); return; }
+    $("#sheetStatus").textContent="Locating…";
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat=pos.coords.latitude, lng=pos.coords.longitude, best=null, bd=1e9;
+      CITIES.forEach(function(c){
+        var d=haversine({lat:lat,lng:lng},{lat:c[3],lng:c[4]});
+        if(d<bd){ bd=d; best=c; }
+      });
+      setLocation({name:"My location"+(best?" (near "+best[0]+")":""),lat:lat,lng:lng,source:"geo"});
+    },function(){ $("#sheetStatus").textContent=t("locDenied"); },{timeout:8000});
+  });
+  $("#radiusRow").innerHTML = [1,5,10,25,50].map(function(r){
+    return '<button class="chip'+(r===state.radius?" on":"")+'" data-r="'+r+'">'+r+' km</button>';
+  }).join("");
+  $$("#radiusRow .chip").forEach(function(b){
+    b.addEventListener("click",function(){
+      state.radius=Number(b.dataset.r);
+      localStorage.setItem("jatayu.radius",state.radius);
+      $$("#radiusRow .chip").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on"); renderLocBar();
+      if(state.lastQuery) doSearch(state.lastQuery);
+    });
+  });
+  $("#widenBtn").addEventListener("click",function(){
+    state.radius = state.radius>=25 ? 50 : (state.radius<10?10:state.radius*2.5);
+    state.radius = Math.min(50, Math.round(state.radius));
+    localStorage.setItem("jatayu.radius",state.radius);
+    if(state.lastQuery) doSearch(state.lastQuery);
+    renderLocBar();
+  });
+
+  /* drawer controls */
+  $("#settingsBtn").addEventListener("click",openDrawer);
+  $("#closeDrawer").addEventListener("click",closeDrawer);
+  $("#dscrim").addEventListener("click",closeDrawer);
+  $("#brand").addEventListener("click",function(){ showHome(); closeDrawer(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){ closeDrawer(); closeSheet(); }
+  });
+
+  $("#dim").addEventListener("input",function(){
+    state.theme.background.dim=Number(this.value);
+    $("#dimVal").textContent=this.value+"%"; applyTheme();
+  });
+  $("#blur").addEventListener("input",function(){
+    state.theme.background.blur=Number(this.value);
+    $("#blurVal").textContent=this.value+"px"; applyTheme();
+  });
+  $("#pos").addEventListener("change",function(){
+    state.theme.background.position=this.value; applyTheme();
+  });
+
+  $("#bgFile").addEventListener("change",function(){
+    var f=this.files && this.files[0]; if(!f) return;
+    if(f.size>8*1024*1024){ alert("Please pick an image under 8 MB."); return; }
+    var img=new Image(), fr=new FileReader();
+    fr.onload=function(){ img.src=fr.result; };
+    img.onload=function(){
+      var maxW=1600, scale=Math.min(1,maxW/img.width);
+      var cv=document.createElement("canvas");
+      cv.width=Math.round(img.width*scale); cv.height=Math.round(img.height*scale);
+      cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+      var data=cv.toDataURL("image/jpeg",0.82);
+      state.imgURL=data;
+      state.theme.background.kind="image";
+      kvSet("bg",data).catch(function(){});
+      applyTheme();
+      if(ratio(effectiveColors().text,effectiveColors().bg)<4.5) checkContrast();
+    };
+    fr.readAsDataURL(f);
+  });
+  $("#clearImg").addEventListener("click",function(){
+    state.imgURL=null; state.theme.background.kind="color";
+    kvDel("bg").catch(function(){}); applyTheme();
+  });
+
+  $("#exportBtn").addEventListener("click",function(){
+    var data=JSON.stringify(state.theme,null,2);
+    var blob=new Blob([data],{type:"application/json"});
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download="jatayu-theme.json"; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+  $("#importBtn").addEventListener("click",function(){ $("#importFile").click(); });
+  $("#importFile").addEventListener("change",function(){
+    var f=this.files && this.files[0]; if(!f) return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      try{
+        var th=JSON.parse(fr.result);
+        if(!th || !th.colors || !th.colors.bg) throw new Error("bad");
+        state.theme={version:1,mode:th.mode||"system",preset:th.preset||"custom",
+          colors:{bg:th.colors.bg,surface:th.colors.surface||th.colors.bg,text:th.colors.text||"#000",
+                  muted:th.colors.muted||th.colors.text||"#555",accent:th.colors.accent||"#1f6feb",
+                  border:th.colors.border||th.colors.bg},
+          background:th.background||{kind:"color",dim:45,blur:0,position:"center"}};
+        applyTheme();
+      }catch(e){ alert("That file is not a valid Jatayu theme."); }
+    };
+    fr.readAsText(f);
+  });
+  $("#resetBtn").addEventListener("click",function(){
+    state.theme=defaultTheme(); state.imgURL=null; state.theme.background.kind="color";
+    kvDel("bg").catch(function(){}); applyTheme();
+  });
+
+  $("#clearData").addEventListener("click",function(){
+    ["jatayu.theme","jatayu.history","jatayu.saved","jatayu.loc","jatayu.radius","jatayu.lang","jatayu.voiceLang"]
+      .forEach(function(k){ localStorage.removeItem(k); });
+    kvDel("bg").catch(function(){});
+    state.theme=defaultTheme(); state.history=[]; state.saved=[]; state.loc=null; state.imgURL=null;
+    state.lang="en"; state.voiceLang="en-IN"; state.radius=10;
+    applyI18n(); applyTheme(); renderHistory(); renderSaved(); renderLocBar(); showHome();
+    closeDrawer(); setStatus(t("removed"),false);
+  });
+
+  /* restore stored background image */
+  kvGet("bg").then(function(data){
+    if(data && state.theme.background.kind==="image"){
+      state.imgURL=data; applyTheme();
+    }
+  }).catch(function(){});
+
+  /* follow system theme changes */
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){
+    if(state.theme.mode==="system" && (state.theme.preset==="light"||state.theme.preset==="dark")) applyTheme();
+  });
+
+  $("#dim").value=state.theme.background.dim||45; $("#dimVal").textContent=($("#dim").value)+"%";
+  $("#blur").value=state.theme.background.blur||0; $("#blurVal").textContent=($("#blur").value)+"px";
+  $("#pos").value=state.theme.background.position||"center";
+
+  if(!secureOK()) setStatus(t("insecure"),false);
+}
+
+document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</html>
