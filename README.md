@@ -39,24 +39,26 @@ Being explicit, because a prototype that pretends to be a product wastes everyon
 
 `jatayu-build-prompt.md` is a complete, paste-ready brief for an AI coding agent — the product requirements, performance budgets, data contracts, privacy posture and 23 acceptance criteria. It covers what this prototype does not: a real search provider behind one interface, accounts with email-code sign-in, transactional email with SPF/DKIM/DMARC, per-locale font subsetting, and the PWA work.
 
-## Getting to a real web index
+## Real web search (optional)
 
-A static page cannot call a general search API directly: providers either need a secret key, which cannot live in a
-public HTML file, or refuse cross-origin requests. The honest path is one small server-side hop:
+A static page cannot call a general search API directly: providers need a secret key, which
+cannot live in public HTML, and most block cross-origin requests. This repo ships the missing
+hop — a Cloudflare Worker in [`worker/`](worker/README.md) that holds the key, adds CORS and
+caches for five minutes.
 
 ```
-browser  ->  your proxy (Cloudflare Worker / Vercel function)  ->  provider
+browser  ->  worker (Brave or SearXNG key, CORS, cache)  ->  provider
 ```
 
-The proxy holds the key, adds CORS headers, and caches. Providers worth evaluating:
+Deploy it in about five minutes (`worker/README.md` has the commands), then paste its URL into
+the meta tag near the top of `jatayu.html`:
 
-- **SearXNG**, self-hosted — free, aggregates other engines, no per-query cost. Run it next to the proxy.
-- **Brave Search API** — free tier with rate limits; check current terms.
-- **Your own crawl** — the only option that is truly independent, and by far the most work.
+```html
+<meta name="jatayu-proxy" content="https://jatayu-search-proxy.<you>.workers.dev">
+```
 
-Scraping Google or Bing result pages breaks their terms and will get the product blocked; it is not a shortcut, it is a
-dead end. The spec in `jatayu-build-prompt.md` already puts the provider behind a single `search(query, opts)`
-interface, so swapping sources later is one file.
+Until that is set the app quietly uses Wikipedia and OpenStreetMap, which is what the live demo
+does. If the worker is down the page falls back to Wikipedia rather than breaking.
 
 ## Design decisions worth knowing
 
