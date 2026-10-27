@@ -313,11 +313,23 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
   <h3 id="authTitle" data-i18n="signIn"></h3>
   <p data-i18n="localOnlyNote"></p>
   <form id="authForm">
-    <label class="sr" for="authEmail" data-i18n="emailLabel"></label>
-    <input id="authEmail" type="email" inputmode="email" autocomplete="email" required>
-    <div class="btnrow">
-      <button class="btn primary" type="submit" data-i18n="continueBtn"></button>
-      <button class="btn" type="button" id="authCancel" data-i18n="cancelBtn"></button>
+    <div id="authStep1">
+      <label class="sr" for="authEmail" data-i18n="emailLabel"></label>
+      <input id="authEmail" type="email" inputmode="email" autocomplete="email" required>
+      <div class="btnrow">
+        <button class="btn primary" type="submit" id="authContinue" data-i18n="continueBtn"></button>
+        <button class="btn" type="button" id="authCancel" data-i18n="cancelBtn"></button>
+      </div>
+    </div>
+    <div id="authStep2" hidden>
+      <p id="authSentTo"></p>
+      <label class="sr" for="authCode" data-i18n="codeLabel"></label>
+      <input id="authCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6"
+             pattern="[0-9]{6}" style="letter-spacing:6px;font-size:20px">
+      <div class="btnrow">
+        <button class="btn primary" type="submit" id="authVerify" data-i18n="verifyBtn"></button>
+        <button class="btn" type="button" id="authBack" data-i18n="cancelBtn"></button>
+      </div>
     </div>
   </form>
 </div>
@@ -450,7 +462,8 @@ var I18N = {
     searching:"Searching…", liveNote:"Live results from Wikipedia and OpenStreetMap.", offlineNote:"Live sources unreachable — showing the built-in demo dataset instead.",
     images:"Images", videos:"Videos", needLocation:"Set a location to see nearby places.", tabEmpty:"Nothing here yet for this query. Try different words.",
     sourcesLabel:"Sources",
-    signIn:"Sign in", signOut:"Sign out", emailLabel:"Email address", continueBtn:"Continue", cancelBtn:"Cancel", signedInAs:"Signed in as", localOnlyNote:"No server yet — this signs you in on this device only. Cross-device sync arrives with the backend.", savedCount:"Saved searches"
+    signIn:"Sign in", signOut:"Sign out", emailLabel:"Email address", continueBtn:"Continue", cancelBtn:"Cancel", signedInAs:"Signed in as", localOnlyNote:"No server yet — this signs you in on this device only. Cross-device sync arrives with the backend.", savedCount:"Saved searches",
+    codeLabel:"6-digit code", verifyBtn:"Verify", codeSentTo:"We sent a code to", authFailed:"Could not sign in. Check the code and try again."
   },
   hi:{
     tagline:"जो औरों से छूट जाए, देखिए।",
@@ -479,7 +492,8 @@ var I18N = {
     searching:"खोज रहे हैं…", liveNote:"विकिपीडिया और ओपनस्ट्रीटमैप से सीधे परिणाम।", offlineNote:"लाइव स्रोत उपलब्ध नहीं — अंदरूनी डेमो डेटा दिखाया जा रहा है।",
     images:"चित्र", videos:"वीडियो", needLocation:"आसपास की जगहें देखने के लिए लोकेशन चुनें।", tabEmpty:"इस खोज के लिए यहाँ कुछ नहीं मिला। दूसरे शब्द आज़माएँ।",
     sourcesLabel:"स्रोत",
-    signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पता", continueBtn:"आगे बढ़ें", cancelBtn:"रद्द करें", signedInAs:"साइन इन किया गया:", localOnlyNote:"अभी सर्वर नहीं है — यह साइन इन सिर्फ़ इसी डिवाइस पर है। दूसरे डिवाइस पर सिंक बैकएंड आने पर होगा।", savedCount:"सहेजी खोजें"
+    signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पता", continueBtn:"आगे बढ़ें", cancelBtn:"रद्द करें", signedInAs:"साइन इन किया गया:", localOnlyNote:"अभी सर्वर नहीं है — यह साइन इन सिर्फ़ इसी डिवाइस पर है। दूसरे डिवाइस पर सिंक बैकएंड आने पर होगा।", savedCount:"सहेजी खोजें",
+    codeLabel:"6 अंकों का कोड", verifyBtn:"सत्यापित करें", codeSentTo:"कोड भेजा गया:", authFailed:"साइन इन नहीं हो सका। कोड जाँचें और फिर कोशिश करें।"
   },
   mr:{
     tagline:"जे इतरांना दिसत नाही, ते पाहा.",
@@ -508,7 +522,8 @@ var I18N = {
     searching:"शोधत आहोत…", liveNote:"विकिपीडिया आणि ओपनस्ट्रीटमॅपवरून थेट निकाल.", offlineNote:"लाइव्ह स्रोत उपलब्ध नाहीत — अंतर्गत डेमो डेटा दाखवत आहोत.",
     images:"चित्रे", videos:"व्हिडिओ", needLocation:"जवळची ठिकाणे पाहण्यासाठी स्थान निवडा.", tabEmpty:"या शोधासाठी येथे काहीही सापडले नाही. वेगळे शब्द वापरून पहा.",
     sourcesLabel:"स्रोत",
-    signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पत्ता", continueBtn:"पुढे जा", cancelBtn:"रद्द करा", signedInAs:"साइन इन केले:", localOnlyNote:"सध्या सर्व्हर नाही — हे साइन इन फक्त या डिव्हाइसवर आहे. इतर डिव्हाइसवर सिंक बॅकएंड आल्यावर होईल.", savedCount:"साठवलेले शोध"
+    signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पत्ता", continueBtn:"पुढे जा", cancelBtn:"रद्द करा", signedInAs:"साइन इन केले:", localOnlyNote:"सध्या सर्व्हर नाही — हे साइन इन फक्त या डिव्हाइसवर आहे. इतर डिव्हाइसवर सिंक बॅकएंड आल्यावर होईल.", savedCount:"साठवलेले शोध",
+    codeLabel:"6 अंकांचा कोड", verifyBtn:"पडताळा", codeSentTo:"कोड पाठवला:", authFailed:"साइन इन होऊ शकले नाही. कोड तपासा आणि पुन्हा प्रयत्न करा."
   },
   sa:{
     tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
@@ -537,7 +552,8 @@ var I18N = {
     searching:"अन्विष्यामि…", liveNote:"विकिपीडिया-ओपनस्ट्रीटम्याप्-तः प्रत्यक्षाणि फलानि।", offlineNote:"जीवन्तः स्रोतः न प्राप्तः — अन्तर्निहितः प्रारूपदत्तांशः दर्श्यते।",
     images:"चित्राणि", videos:"चलच्चित्राणि", needLocation:"समीपस्थानानि द्रष्टुं स्थानं चिनु।", tabEmpty:"अस्य अन्वेषणस्य कृते अत्र किमपि न प्राप्तम्। अन्यानि पदानि प्रयुङ्क्ष्व।",
     sourcesLabel:"स्रोतः",
-    signIn:"प्रवेशः", signOut:"निर्गमः", emailLabel:"ईपत्रसङ्केतः", continueBtn:"अग्रे", cancelBtn:"निरस्तम्", signedInAs:"प्रवेशितः", localOnlyNote:"सेवकः नास्ति — प्रवेशः अस्मिन् यन्त्र एव। अन्यत्र सङ्क्रमणं पश्चात्।", savedCount:"रक्षितानि अन्वेषणानि"
+    signIn:"प्रवेशः", signOut:"निर्गमः", emailLabel:"ईपत्रसङ्केतः", continueBtn:"अग्रे", cancelBtn:"निरस्तम्", signedInAs:"प्रवेशितः", localOnlyNote:"सेवकः नास्ति — प्रवेशः अस्मिन् यन्त्र एव। अन्यत्र सङ्क्रमणं पश्चात्।", savedCount:"रक्षितानि अन्वेषणानि",
+    codeLabel:"षडङ्कसङ्केतः", verifyBtn:"सत्यापय", codeSentTo:"सङ्केतः प्रेषितः", authFailed:"प्रवेशः न जातः। सङ्केतं परीक्ष्य पुनः यतस्व।"
   },
   es:{
     tagline:"Ve lo que otros no ven.",
@@ -566,7 +582,8 @@ var I18N = {
     searching:"Buscando…", liveNote:"Resultados en vivo de Wikipedia y OpenStreetMap.", offlineNote:"Fuentes en vivo no disponibles: se muestra el conjunto de datos de demostración.",
     images:"Imágenes", videos:"Vídeos", needLocation:"Elige una ubicación para ver lugares cercanos.", tabEmpty:"Aquí no hay nada para esta búsqueda. Prueba otras palabras.",
     sourcesLabel:"Fuentes",
-    signIn:"Iniciar sesión", signOut:"Cerrar sesión", emailLabel:"Correo electrónico", continueBtn:"Continuar", cancelBtn:"Cancelar", signedInAs:"Sesión iniciada como", localOnlyNote:"Aún no hay servidor: la sesión es solo en este dispositivo. La sincronización llegará con el backend.", savedCount:"Búsquedas guardadas"
+    signIn:"Iniciar sesión", signOut:"Cerrar sesión", emailLabel:"Correo electrónico", continueBtn:"Continuar", cancelBtn:"Cancelar", signedInAs:"Sesión iniciada como", localOnlyNote:"Aún no hay servidor: la sesión es solo en este dispositivo. La sincronización llegará con el backend.", savedCount:"Búsquedas guardadas",
+    codeLabel:"Código de 6 dígitos", verifyBtn:"Verificar", codeSentTo:"Enviamos un código a", authFailed:"No se pudo iniciar sesión. Revisa el código e inténtalo de nuevo."
   },
   fr:{
     tagline:"Voyez ce que les autres manquent.",
@@ -595,7 +612,8 @@ var I18N = {
     searching:"Recherche…", liveNote:"Résultats en direct de Wikipédia et OpenStreetMap.", offlineNote:"Sources en direct indisponibles : jeu de données de démonstration affiché.",
     images:"Images", videos:"Vidéos", needLocation:"Choisissez un lieu pour voir les endroits à proximité.", tabEmpty:"Rien ici pour cette recherche. Essayez d autres mots.",
     sourcesLabel:"Sources",
-    signIn:"Se connecter", signOut:"Se déconnecter", emailLabel:"Adresse e-mail", continueBtn:"Continuer", cancelBtn:"Annuler", signedInAs:"Connecté en tant que", localOnlyNote:"Pas encore de serveur : la connexion ne vaut que pour cet appareil. La synchronisation viendra avec le backend.", savedCount:"Recherches enregistrées"
+    signIn:"Se connecter", signOut:"Se déconnecter", emailLabel:"Adresse e-mail", continueBtn:"Continuer", cancelBtn:"Annuler", signedInAs:"Connecté en tant que", localOnlyNote:"Pas encore de serveur : la connexion ne vaut que pour cet appareil. La synchronisation viendra avec le backend.", savedCount:"Recherches enregistrées",
+    codeLabel:"Code à 6 chiffres", verifyBtn:"Vérifier", codeSentTo:"Nous avons envoyé un code à", authFailed:"Connexion impossible. Vérifiez le code et réessayez."
   },
   ar:{
     tagline:"أبصر ما يفوته الآخرون.",
@@ -624,7 +642,8 @@ var I18N = {
     searching:"جارٍ البحث…", liveNote:"نتائج مباشرة من ويكيبيديا وخرائط الشوارع المفتوحة.", offlineNote:"المصادر المباشرة غير متاحة — تُعرض بيانات العرض التجريبي.",
     images:"صور", videos:"فيديوهات", needLocation:"اختر موقعاً لعرض الأماكن القريبة.", tabEmpty:"لا شيء هنا لهذا البحث. جرّب كلمات أخرى.",
     sourcesLabel:"المصادر",
-    signIn:"تسجيل الدخول", signOut:"تسجيل الخروج", emailLabel:"البريد الإلكتروني", continueBtn:"متابعة", cancelBtn:"إلغاء", signedInAs:"مسجّل الدخول باسم", localOnlyNote:"لا يوجد خادم بعد — تسجيل الدخول على هذا الجهاز فقط. ستأتي المزامنة مع الخادم.", savedCount:"عمليات البحث المحفوظة"
+    signIn:"تسجيل الدخول", signOut:"تسجيل الخروج", emailLabel:"البريد الإلكتروني", continueBtn:"متابعة", cancelBtn:"إلغاء", signedInAs:"مسجّل الدخول باسم", localOnlyNote:"لا يوجد خادم بعد — تسجيل الدخول على هذا الجهاز فقط. ستأتي المزامنة مع الخادم.", savedCount:"عمليات البحث المحفوظة",
+    codeLabel:"رمز من 6 أرقام", verifyBtn:"تحقق", codeSentTo:"أرسلنا رمزاً إلى", authFailed:"تعذّر تسجيل الدخول. تحقق من الرمز وحاول مجدداً."
   },
   ja:{
     tagline:"他の人が見落とすものを見る。",
@@ -653,7 +672,8 @@ var I18N = {
     searching:"検索中…", liveNote:"Wikipedia と OpenStreetMap からの最新結果です。", offlineNote:"ライブソースに接続できないため、内蔵のデモデータを表示しています。",
     images:"画像", videos:"動画", needLocation:"近くの場所を見るには位置情報を設定してください。", tabEmpty:"この検索に該当するものはありません。別の言葉をお試しください。",
     sourcesLabel:"出典",
-    signIn:"サインイン", signOut:"サインアウト", emailLabel:"メールアドレス", continueBtn:"続行", cancelBtn:"キャンセル", signedInAs:"サインイン中:", localOnlyNote:"サーバーはまだありません。この端末内だけのサインインです。端末間の同期はバックエンド導入後に有効になります。", savedCount:"保存した検索"
+    signIn:"サインイン", signOut:"サインアウト", emailLabel:"メールアドレス", continueBtn:"続行", cancelBtn:"キャンセル", signedInAs:"サインイン中:", localOnlyNote:"サーバーはまだありません。この端末内だけのサインインです。端末間の同期はバックエンド導入後に有効になります。", savedCount:"保存した検索",
+    codeLabel:"6桁のコード", verifyBtn:"確認", codeSentTo:"コードを送信しました:", authFailed:"サインインできませんでした。コードを確認して再試行してください。"
   },
   zh:{
     tagline:"看见别人错过的。",
@@ -682,7 +702,8 @@ var I18N = {
     searching:"搜索中…", liveNote:"来自维基百科和 OpenStreetMap 的实时结果。", offlineNote:"无法连接实时来源，显示内置演示数据。",
     images:"图片", videos:"视频", needLocation:"设置位置以查看附近地点。", tabEmpty:"此搜索暂无内容，试试其他词。",
     sourcesLabel:"来源",
-    signIn:"登录", signOut:"退出", emailLabel:"邮箱地址", continueBtn:"继续", cancelBtn:"取消", signedInAs:"已登录：", localOnlyNote:"尚未接入服务器——登录仅限本设备。跨设备同步将在后端接入后提供。", savedCount:"已保存的搜索"
+    signIn:"登录", signOut:"退出", emailLabel:"邮箱地址", continueBtn:"继续", cancelBtn:"取消", signedInAs:"已登录：", localOnlyNote:"尚未接入服务器——登录仅限本设备。跨设备同步将在后端接入后提供。", savedCount:"已保存的搜索",
+    codeLabel:"6 位验证码", verifyBtn:"验证", codeSentTo:"验证码已发送至", authFailed:"无法登录，请检查验证码后重试。"
   },
 };
 /* Which speech-recognition locale each UI language maps to. Sanskrit has no
@@ -1482,8 +1503,29 @@ function emailResults(){
 }
 
 /* ============================ account ============================
-   There is no server behind this. The session is a local record, and the
-   interface says so rather than implying a sync that does not exist. */
+   Two modes, chosen by whether a proxy is configured:
+
+     no proxy  -> local preview: the email is kept on this device only
+     proxy set -> real accounts: POST /auth/code, then /auth/verify, and the
+                  session lives in an httpOnly cookie the page cannot read
+
+   The page never sees a token, so there is nothing here for an XSS bug to
+   steal — which is the reason for using a cookie rather than localStorage. */
+var API = PROXY;
+
+function apiFetch(path, opts){
+  opts = opts || {};
+  opts.credentials = "include";
+  if (opts.body && typeof opts.body !== "string") {
+    opts.body = JSON.stringify(opts.body);
+    opts.headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
+  }
+  return fetch(API + path, opts).then(function(r){
+    return r.json().then(function(j){ return { ok: r.ok, status: r.status, body: j || {} }; })
+                    .catch(function(){ return { ok: r.ok, status: r.status, body: {} }; });
+  }).catch(function(){ return { ok: false, status: 0, body: {} }; });
+}
+
 function initialsOf(email){
   var local = String(email || "").split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
   return (local.slice(0, 2) || "?").toUpperCase();
@@ -1512,26 +1554,83 @@ function openAuth(){
   $("#acctMenu").hidden = true;
   $("#authModal").hidden = false;
   $("#authScrim").classList.add("show");
+  $("#authStep1").hidden = false;
+  $("#authStep2").hidden = true;
   setTimeout(function(){ var i = $("#authEmail"); if (i) i.focus(); }, 30);
 }
 function closeAuth(){
   $("#authModal").hidden = true;
   $("#authScrim").classList.remove("show");
   var f = $("#authForm"); if (f) f.reset();
+  $("#authStep1").hidden = false;
+  $("#authStep2").hidden = true;
+  state.pendingEmail = null;
 }
-function signIn(email){
-  state.session = { email: email, since: Date.now() };
+function finishSignIn(email){
+  state.session = { email: email };
   saveJSON("jatayu.session", state.session);
   renderAccount();
   closeAuth();
   setStatus(t("signedInAs") + " " + email, false);
+  if (API) loadServerSearches();
+}
+async function submitAuth(){
+  var email = ($("#authEmail").value || "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    setStatus(t("emailLabel") + "?", true);
+    return;
+  }
+
+  /* Local preview mode: no server, so no code to check. */
+  if (!API) { finishSignIn(email); return; }
+
+  if (!$("#authStep2").hidden) {
+    var code = ($("#authCode").value || "").trim();
+    if (!/^\d{6}$/.test(code)) { setStatus(t("codeLabel") + "?", true); return; }
+    var v = await apiFetch("/auth/verify", {
+      method: "POST", body: { email: state.pendingEmail || email, code: code },
+    });
+    if (!v.ok) { setStatus(t("authFailed"), true); return; }
+    finishSignIn(v.body.email || email);
+    return;
+  }
+
+  var r = await apiFetch("/auth/code", { method: "POST", body: { email: email } });
+  if (!r.ok) {
+    setStatus(r.status === 429 ? t("authFailed") : t("authFailed"), true);
+    return;
+  }
+  state.pendingEmail = email;
+  $("#authSentTo").textContent = t("codeSentTo") + " " + email;
+  $("#authStep1").hidden = true;
+  $("#authStep2").hidden = false;
+  setTimeout(function(){ var c = $("#authCode"); if (c) c.focus(); }, 30);
 }
 function signOut(){
+  if (API) apiFetch("/auth/logout", { method: "POST" });
   state.session = null;
   localStorage.removeItem("jatayu.session");
   $("#acctMenu").hidden = true;
   renderAccount();
   setStatus("", false);
+}
+function loadServerSearches(){
+  if (!API || !state.session) return;
+  apiFetch("/searches").then(function(r){
+    if (!r.ok || !r.body.searches) return;
+    var remote = r.body.searches.map(function(s){ return s.query; });
+    var merged = remote.concat(state.saved.filter(function(q){ return remote.indexOf(q) === -1; }));
+    state.saved = merged.slice(0, 40);
+    renderSaved();
+    renderAccount();
+  });
+}
+function pushServerSearch(query){
+  if (!API || !state.session) return;
+  apiFetch("/searches", {
+    method: "POST",
+    body: { query: query, filters: state.loc ? { location: state.loc.name, radiusKm: state.radius, type: state.tab } : null, pinned: true },
+  });
 }
 
 /* ============================ drawer / sheet ============================ */
@@ -1640,6 +1739,7 @@ function init(){
     if(!state.lastQuery) return;
     if(state.saved.indexOf(state.lastQuery)===-1) state.saved.unshift(state.lastQuery);
     saveJSON("jatayu.saved",state.saved); renderSaved(); setStatus(t("pinned"),false);
+    pushServerSearch(state.lastQuery);
   });
   $("#emailBtn").addEventListener("click",emailResults);
 
@@ -1710,12 +1810,12 @@ function init(){
   $("#authScrim").addEventListener("click", closeAuth);
   $("#authForm").addEventListener("submit", function(ev){
     ev.preventDefault();
-    var email = ($("#authEmail").value || "").trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-      setStatus(t("emailLabel") + "?", true);
-      return;
-    }
-    signIn(email);
+    submitAuth();
+  });
+  $("#authBack").addEventListener("click", function(){
+    $("#authStep2").hidden = true;
+    $("#authStep1").hidden = false;
+    state.pendingEmail = null;
   });
   document.addEventListener("click", function(ev){
     var menu = $("#acctMenu");
@@ -1808,6 +1908,22 @@ function init(){
     applyI18n(); applyTheme(); renderHistory(); renderSaved(); renderLocBar(); renderAccount(); showHome();
     closeDrawer(); setStatus(t("removed"),false);
   });
+
+  /* With a real API, the cookie is the source of truth for who is signed in. */
+  if (API) {
+    apiFetch("/me").then(function(r){
+      if (r.ok && r.body && r.body.email) {
+        state.session = { email: r.body.email };
+        saveJSON("jatayu.session", state.session);
+        renderAccount();
+        loadServerSearches();
+      } else if (state.session && state.session.email) {
+        state.session = null;
+        localStorage.removeItem("jatayu.session");
+        renderAccount();
+      }
+    });
+  }
 
   /* restore stored background image */
   kvGet("bg").then(function(data){
