@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jatayu — see what others miss</title>
 <meta name="theme-color" content="#ffffff">
+<!-- Paste your search-proxy URL here to get real web results. See worker/README.md -->
+<meta name="jatayu-proxy" content="">
 <style>
 :root{
   --bg:#ffffff;--surface:#f4f6f9;--text:#12161c;--muted:#5b6472;--accent:#1f6feb;--border:#e3e8ee;
@@ -12,6 +14,9 @@
   --shadow:0 1px 2px rgba(16,24,40,.06),0 10px 28px rgba(16,24,40,.09);
 }
 *{box-sizing:border-box}
+/* An explicit display:flex on a class beats the UA's [hidden] rule, so make
+   the attribute authoritative. */
+[hidden]{display:none!important}
 html,body{margin:0;min-height:100%}
 body{
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari","Nirmala UI",
@@ -132,6 +137,23 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 [dir="rtl"] .citylist button{text-align:right}
 [dir="rtl"] .swatchrow{flex-direction:row-reverse}
 [dir="rtl"] .card h3,[dir="rtl"] .qline,[dir="rtl"] .status,[dir="rtl"] .card p{text-align:right}
+/* Results view: the search form moves into the sticky header so a new
+   search never requires going back to the home screen. */
+body.view-results header.top .wrap{gap:8px}
+body.view-results header.top .spacer{display:none}
+body.view-results header.top form.bar{flex:1;min-width:0;padding:4px;padding-inline-start:14px;box-shadow:none}
+body.view-results header.top form.bar input{padding:8px 0;font-size:15px;min-width:60px}
+body.view-results header.top form.bar .go{padding:9px 15px;font-size:14px}
+body.view-results header.top form.bar .mic{width:36px;height:36px}
+body.view-results .brand span:last-child{display:none}
+body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
+@media(max-width:430px){
+  /* The search field is the point of this row: give it the space. Language
+     and theme both remain reachable from the home screen and Settings. */
+  body.view-results select.lang{display:none}
+  body.view-results #themeBtn{display:none}
+  body.view-results header.top form.bar .go{padding:9px 13px;font-size:13px}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script>
@@ -156,7 +178,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 <body>
 
 <header class="top">
-  <div class="wrap">
+  <div class="wrap" id="topWrap">
     <div class="brand" id="brand"><span class="mark">ज</span><span>Jatayu</span></div>
     <div class="spacer"></div>
     <select class="lang" id="langSel" aria-label="Language">
@@ -365,7 +387,7 @@ var I18N = {
     insecure:"Voice and location need https or localhost. Serve this file with: python3 -m http.server",
     resultsFor:"Results for", noResults:"Nothing found. Try fewer words, or widen the radius.",
     widen:"Widen radius", directions:"Directions", understood:"Understood as",
-    protoNote:"Prototype: results come from a small built-in dataset, not a live index. Voice needs https or localhost.",
+    protoNote:"Prototype: results come from Wikipedia and OpenStreetMap, not a full web index. Voice needs https or localhost.",
     footerNote:"Theme, history and location stay on this device.",
     useMyLoc:"Use my location", pickCity:"Pick a city", enterPin:"Enter PIN code",
     pinHint:"Approximate — the first digits of a PIN map to a city.", radius:"Radius",
@@ -391,7 +413,7 @@ var I18N = {
     insecure:"आवाज़ और लोकेशन के लिए https या localhost चाहिए। फ़ाइल को इस तरह चलाएँ: python3 -m http.server",
     resultsFor:"परिणाम", noResults:"कुछ नहीं मिला। कम शब्द या बड़ा दायरा आज़माएँ।",
     widen:"दायरा बढ़ाएँ", directions:"रास्ता", understood:"समझा गया",
-    protoNote:"प्रोटोटाइप: परिणाम एक छोटे अंदरूनी डेटासेट से हैं, लाइव इंडेक्स से नहीं। आवाज़ के लिए https या localhost चाहिए।",
+    protoNote:"प्रोटोटाइप: परिणाम विकिपीडिया और ओपनस्ट्रीटमैप से हैं, किसी पूर्ण वेब इंडेक्स से नहीं। आवाज़ के लिए https या localhost चाहिए।",
     footerNote:"थीम, इतिहास और लोकेशन इसी डिवाइस पर रहते हैं।",
     useMyLoc:"मेरी लोकेशन लें", pickCity:"शहर चुनें", enterPin:"पिन कोड डालें",
     pinHint:"अनुमानित — पिन के पहले अंक शहर बताते हैं।", radius:"दायरा",
@@ -417,7 +439,7 @@ var I18N = {
     insecure:"आवाज आणि स्थानासाठी https किंवा localhost आवश्यक आहे. फाइल अशी चालवा: python3 -m http.server",
     resultsFor:"निकाल", noResults:"काहीही सापडले नाही. कमी शब्द किंवा मोठा परिसर वापरून पहा.",
     widen:"परिसर वाढवा", directions:"मार्ग", understood:"असे समजले",
-    protoNote:"प्रोटोटाइप: निकाल लहान अंतर्गत डेटासेटमधून आहेत, लाइव्ह इंडेक्समधून नाही. आवाजासाठी https किंवा localhost आवश्यक.",
+    protoNote:"प्रोटोटाइप: निकाल विकिपीडिया आणि ओपनस्ट्रीटमॅपवरून आहेत, संपूर्ण वेब इंडेक्सवरून नाही. आवाजासाठी https किंवा localhost आवश्यक.",
     footerNote:"थीम, इतिहास आणि स्थान याच डिव्हाइसवर राहतात.",
     useMyLoc:"माझे स्थान घ्या", pickCity:"शहर निवडा", enterPin:"पिन कोड टाका",
     pinHint:"अंदाजे — पिनचे पहिले अंक शहर दर्शवतात.", radius:"परिसर",
@@ -443,7 +465,7 @@ var I18N = {
     insecure:"वाचे स्थानाय च https अथवा localhost आवश्यकम्।",
     resultsFor:"फलानि", noResults:"किमपि न प्राप्तम्। न्यूनानि पदानि प्रयुङ्क्ष्व।",
     widen:"परिधिं वर्धय", directions:"मार्गः", understood:"अवगतम्",
-    protoNote:"प्रारूपम्: फलानि अन्तर्निहितदत्तांशात्, न जीवद्वारा।",
+    protoNote:"प्रारूपम्: फलानि विकिपीडिया-ओपनस्ट्रीटम्याप्-तः सन्ति, न पूर्णजालसूचीतः। वाचे https अथवा localhost आवश्यकम्।",
     footerNote:"विन्यासः, इतिहासः, स्थानं च अस्याम् एव यन्त्रायां तिष्ठन्ति।",
     useMyLoc:"मम स्थानं गृहाण", pickCity:"नगरं चिनु", enterPin:"पिन् सङ्केतं लिख",
     pinHint:"सामान्यतः — पिन् सङ्केतस्य प्रथमाङ्काः नगरं सूचयन्ति।",
@@ -469,7 +491,7 @@ var I18N = {
     insecure:"La voz y la ubicación necesitan https o localhost.",
     resultsFor:"Resultados de", noResults:"No se encontró nada. Prueba con menos palabras o amplía el radio.",
     widen:"Ampliar radio", directions:"Cómo llegar", understood:"Entendido como",
-    protoNote:"Prototipo: los resultados vienen de un conjunto de datos interno, no de un índice real.",
+    protoNote:"Prototipo: los resultados vienen de Wikipedia y OpenStreetMap, no de un índice web completo. La voz necesita https o localhost.",
     footerNote:"El tema, el historial y la ubicación se quedan en este dispositivo.",
     useMyLoc:"Usar mi ubicación", pickCity:"Elegir una ciudad", enterPin:"Introducir código PIN",
     pinHint:"Aproximado: los primeros dígitos del PIN indican la ciudad.", radius:"Radio",
@@ -495,7 +517,7 @@ var I18N = {
     insecure:"La voix et la position nécessitent https ou localhost.",
     resultsFor:"Résultats pour", noResults:"Aucun résultat. Essayez moins de mots ou un rayon plus large.",
     widen:"Élargir le rayon", directions:"Itinéraire", understood:"Compris comme",
-    protoNote:"Prototype : les résultats proviennent d'un jeu de données interne, pas d'un index réel.",
+    protoNote:"Prototype : les résultats viennent de Wikipédia et OpenStreetMap, pas d'un index web complet. La voix nécessite https ou localhost.",
     footerNote:"Le thème, l'historique et la position restent sur cet appareil.",
     useMyLoc:"Utiliser ma position", pickCity:"Choisir une ville", enterPin:"Saisir un code PIN",
     pinHint:"Approximatif : les premiers chiffres du PIN indiquent la ville.", radius:"Rayon",
@@ -521,7 +543,7 @@ var I18N = {
     insecure:"الصوت والموقع يحتاجان إلى https أو localhost.",
     resultsFor:"نتائج", noResults:"لا نتائج. جرّب كلمات أقل أو نطاقاً أوسع.",
     widen:"وسّع النطاق", directions:"الاتجاهات", understood:"فُهم كـ",
-    protoNote:"نموذج أولي: النتائج من بيانات داخلية وليست من فهرس حقيقي.",
+    protoNote:"نموذج أولي: النتائج من ويكيبيديا وخرائط الشوارع المفتوحة، وليست من فهرس ويب كامل. الصوت يحتاج إلى https أو localhost.",
     footerNote:"النمط والسجل والموقع تبقى على هذا الجهاز.",
     useMyLoc:"استخدم موقعي", pickCity:"اختر مدينة", enterPin:"أدخل رمز PIN",
     pinHint:"تقريبي — أول أرقام الرمز تدل على المدينة.", radius:"النطاق",
@@ -547,7 +569,7 @@ var I18N = {
     insecure:"音声と位置情報には https または localhost が必要です。",
     resultsFor:"検索結果", noResults:"見つかりませんでした。語数を減らすか範囲を広げてください。",
     widen:"範囲を広げる", directions:"経路", understood:"次のように解釈",
-    protoNote:"プロトタイプ：結果は内部データによるもので、実際のインデックスではありません。",
+    protoNote:"プロトタイプ：結果は Wikipedia と OpenStreetMap によるもので、完全なウェブインデックスではありません。音声には https か localhost が必要です。",
     footerNote:"テーマ・履歴・位置情報はこの端末に保存されます。",
     useMyLoc:"現在地を使う", pickCity:"都市を選ぶ", enterPin:"PINコードを入力",
     pinHint:"おおよそ：PINの最初の数字が都市を示します。", radius:"範囲",
@@ -573,7 +595,7 @@ var I18N = {
     insecure:"语音和定位需要 https 或 localhost。",
     resultsFor:"结果", noResults:"没有找到结果。试试更少的词或扩大范围。",
     widen:"扩大范围", directions:"路线", understood:"理解为",
-    protoNote:"原型：结果来自内置数据，并非实时索引。",
+    protoNote:"原型：结果来自维基百科和 OpenStreetMap，并非完整的网络索引。语音需要 https 或 localhost。",
     footerNote:"主题、历史和位置只保存在本设备上。",
     useMyLoc:"使用我的位置", pickCity:"选择城市", enterPin:"输入邮编",
     pinHint:"近似值：邮编前几位对应城市。", radius:"范围",
@@ -892,6 +914,11 @@ function transliterate(q){
    the app falls back to the built-in demo dataset and says so, rather
    than silently inventing results.
    --------------------------------------------------------------- */
+var PROXY = (function(){
+  var m = document.querySelector('meta[name="jatayu-proxy"]');
+  return (m && m.content) ? m.content.replace(/\/$/, "") : "";
+})();
+
 var WIKI_LANG = {en:"en",hi:"hi",mr:"mr",sa:"sa",es:"es",fr:"fr",ar:"ar",ja:"ja",zh:"zh"};
 var memCache = {};
 
@@ -926,6 +953,26 @@ function stripHtml(s){
   var d = document.createElement("div");
   d.innerHTML = s || "";
   return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+/* If a proxy is configured it is the primary source, because it can reach a
+   real web index. Wikipedia remains the fallback, and the default when no
+   proxy is set. */
+function proxySearch(q){
+  if (!PROXY) return Promise.resolve([]);
+  var url = PROXY + (PROXY.indexOf("?") > -1 ? "&" : "?") + "q=" + encodeURIComponent(q);
+  return fetchJSON(url, 9000).then(function(r){
+    if (!r || !Array.isArray(r.results)) return [];
+    return r.results.map(function(hit){
+      return {
+        title: hit.title || hit.url,
+        url: hit.url,
+        source: hit.source || host(hit.url),
+        type: hit.type || "web",
+        snippet: hit.snippet || ""
+      };
+    }).filter(function(hit){ return hit.url; });
+  });
 }
 
 function wikiSearch(q){
@@ -1009,7 +1056,10 @@ function demoResults(q){
 function runSearch(q){
   var local = isLocal(q);
   var wantPlaces = state.loc && (local || state.tab === "place");
-  var jobs = [wikiSearch(q)];
+  var webJob = proxySearch(q).then(function(list){
+    return (list && list.length) ? list : wikiSearch(q);
+  });
+  var jobs = [webJob];
   if (wantPlaces) jobs.push(osmSearch(q, state.loc, state.radius));
 
   return Promise.all(jobs).then(function(res){
@@ -1076,11 +1126,23 @@ function renderResults(){
     '</article>';
   }).join("");
 }
+function placeSearchForm(where){
+  var form = $("#searchForm");
+  if (where === "header") {
+    if (form.parentNode !== $("#topWrap")) $("#topWrap").insertBefore(form, $("#langSel"));
+  } else {
+    if (form.parentNode !== $("#home")) $("#home").insertBefore(form, $("#home").querySelector(".chips"));
+  }
+}
 function showHome(){
+  placeSearchForm("home");
+  document.body.classList.remove("view-results");
   $("#home").hidden=false; $("#results").hidden=true;
   document.title="Jatayu — see what others miss";
 }
 function showResults(){
+  placeSearchForm("header");
+  document.body.classList.add("view-results");
   $("#home").hidden=true; $("#results").hidden=false;
 }
 function renderLocBar(){
