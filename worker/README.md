@@ -58,3 +58,91 @@ down or misconfigured the page silently falls back to Wikipedia rather than brea
   100,000 requests a day on the free plan. Check both before pointing real traffic at it.
 - Do not commit a key. `wrangler secret` keeps it out of the repo; a key in
   `wrangler.toml` or in the HTML is public the moment you push.
+
+---
+
+# Accounts (email code sign-in)
+
+The same worker also handles accounts: no passwords, a 6-digit code by email, and an
+httpOnly session cookie. Files: `auth.js` (routes), `schema.sql` (D1 tables).
+
+## 1. Create the database
+
+```bash
+wrangler d1 create jatayu
+# copy the database_id it prints into wrangler.toml
+
+wrangler d1 execute jatayu --remote --file=./schema.sql
+```
+
+## 2. Secrets
+
+```bash
+wrangler secret put RESEND_API_KEY   # https://resend.com — 3,000 emails/month free
+wrangler secret put SESSION_PEPPER   # any long random string
+```
+
+`MAIL_FROM` lives in `wrangler.toml`. **Codes sent from an unverified domain land in spam**,
+so add your domain in Resend and publish its SPF, DKIM and DMARC records before testing with
+real users. Resend's `onboarding@resend.dev` sender only mails your own address.
+
+## 3. Deploy and connect
+
+```bash
+wrangler deploy
+```
+
+Then put the worker URL in the page:
+
+```html
+<meta name="jatayu-proxy" content="https://jatayu-search-proxy.<you>.workers.dev">
+```
+
+That single setting does two jobs: it turns on real web results *and* switches the sign-in
+from local-preview to real accounts.
+
+## 4. Same-site or cross-site?
+
+- Front end on **Cloudflare Pages** (same account, or your own domain): leave
+  `CROSS_SITE = "false"`. The cookie is first-party and `SameSite=Lax`.
+- Front end on **github.io** (a different site): set `CROSS_SITE = "true"`. The cookie
+  becomes `SameSite=None; Secure`, which works but is weaker — a first-party setup is
+  worth the move.
+
+`ALLOWED_ORIGIN` must be the exact origin of the front end. With `"*"`, browsers refuse to
+send credentials, so sign-in will silently fail.
+
+## 5. What the endpoints do
+
+| Route | Purpose |
+|---|---|
+| `POST /auth/code` | emails a 6-digit code (10 min, 5/hour per address, 20/hour per IP) |
+| `POST /auth/verify` | checks the code, creates the user, sets the session cookie |
+| `POST /auth/logout` | deletes the session row and clears the cookie |
+| `GET /me` | email, saved-search count, prefs |
+| `PUT /me/prefs` | theme, language, safe-search |
+| `GET/POST/DELETE /searches` | saved searches with their filters |
+| `DELETE /me` | deletes the account, searches, prefs and sessions (DPDP) |
+
+Codes and session tokens are stored only as SHA-256 hashes, so a database dump yields no
+usable credentials. The page never sees a token — it lives in an httpOnly cookie.
+
+## 6. Tests
+
+```bash
+node test/auth.test.mjs
+```
+
+28 checks covering the full flow: code issue, wrong code, attempt counting, code burn,
+cookie flags, hashed-token storage, `/me`, saved searches, prefs, one user not seeing
+another's data, logout, account deletion, rate limiting, and that the search route still
+works alongside auth. They run the real worker against real SQLite (via Python's `sqlite3`,
+because this environment cannot load native or wasm builds).
+
+## 7. Before real users
+
+- Email deliverability is the most likely thing to make sign-in feel broken. Test with a
+  Gmail and an Outlook address, not just your own domain.
+- You are now storing personal data. Have a deletion route (it exists), say what you store,
+  and keep it to the minimum: an email address and what the user chose to save.
+- Free tiers: Workers 100k requests/day, D1 5 GB and 5M row reads/day, Resend 3k emails/month.
