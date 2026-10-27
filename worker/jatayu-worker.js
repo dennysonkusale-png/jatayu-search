@@ -20,6 +20,8 @@
  * ads. It answers, caches for five minutes, and forgets.
  */
 
+import { route as authRoute } from "./auth.js";
+
 const MAX_QUERY = 300;
 const CACHE_SECONDS = 300;
 
@@ -28,16 +30,25 @@ export default {
     const origin = env.ALLOWED_ORIGIN || "*";
     const cors = {
       "Access-Control-Allow-Origin": origin,
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      /* Session cookies are only usable when the origin is named explicitly;
+         with "*" the browser will ignore the credential. */
+      "Access-Control-Allow-Credentials": origin === "*" ? "false" : "true",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Access-Control-Max-Age": "86400",
       Vary: "Origin",
     };
 
-    if (request.method === "OPTIONS") return new Response(null, { headers: cors });
-    if (request.method !== "GET") return json({ error: "method not allowed" }, 405, cors);
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
     const url = new URL(request.url);
+
+    /* Accounts first: /auth/*, /me, /searches. Returns null if the path is
+       not one of those, and we fall through to search. */
+    const authResponse = await authRoute(request, env, url, cors);
+    if (authResponse) return authResponse;
+
+    if (request.method !== "GET") return json({ error: "method not allowed" }, 405, cors);
 
     if (url.searchParams.has("ping")) {
       return json({
