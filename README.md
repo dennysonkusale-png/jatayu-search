@@ -11,7 +11,7 @@ Open `jatayu.html` and everything below is live, in one self-contained file with
 - **Search** with query suggestions, recent searches, saved searches, and result cards with distance badges and directions links.
 - **Themes** — system, light and dark, six presets, per-token colour pickers, and an uploaded photo as the page background with dim, blur and position controls. Every custom palette is checked for WCAG AA contrast, with a one-tap auto-fix that never silently overrides the user.
 - **Location filter** — opt-in only. Use my location, pick a city, or enter a PIN code; radius chips from 1 to 50 km; a dismissible chip that always shows when a filter is active.
-- **Nine interface languages** — English, Hindi, Marathi, Sanskrit, Spanish, French, Arabic, Japanese, Simplified Chinese — with real right-to-left handling for Arabic.
+- **Nine interface languages** — English, हिन्दी, मराठी, संस्कृतम्, Español, Français, العربية, 日本語, 简体中文 — with real right-to-left handling for Arabic.
 - **Voice search** via the Web Speech API, with per-language recognition and an editable transcript.
 - **Email results** and **saved searches**, both device-local in this build.
 
@@ -50,4 +50,4 @@ Being explicit, because a prototype that pretends to be a product wastes everyon
 
 ## Status
 
-Prototype. No licence has been chosen yet — treat the code as all rights reserved until one is added.
+Prototype. Released under the MIT License — see [LICENSE](LICENSE).
