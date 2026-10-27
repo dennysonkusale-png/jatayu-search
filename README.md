@@ -8,7 +8,7 @@ This repository holds a working front-end prototype and the build specification 
 
 Open `jatayu.html` and everything below is live, in one self-contained file with no build step and no dependencies.
 
-- **Live search** against Wikipedia's search API and OpenStreetMap, with query suggestions, recent searches, saved searches, and result cards carrying real distance badges and directions links.
+- **Live search** with tabs for All, Images, Videos, News and Places. Web results come from Wikipedia, images and video from Wikimedia Commons, headlines from Wikinews, and nearby places from OpenStreetMap — with real distance badges and directions links.
 - **Themes** — system, light and dark, six presets, per-token colour pickers, and an uploaded photo as the page background with dim, blur and position controls. Every custom palette is checked for WCAG AA contrast, with a one-tap auto-fix that never silently overrides the user.
 - **Location filter** — opt-in only. Use my location, pick a city, or enter a PIN code; radius chips from 1 to 50 km; a dismissible chip that always shows when a filter is active.
 - **Nine interface languages** — English, हिन्दी, मराठी, संस्कृतम्, Español, Français, العربية, 日本語, 简体中文 — with real right-to-left handling for Arabic.
@@ -29,7 +29,8 @@ Then visit `http://localhost:8000/jatayu.html`. Opening the file directly still 
 
 Being explicit, because a prototype that pretends to be a product wastes everyone's time:
 
-- **There is no general web index.** Results come from two public APIs called straight from the browser: Wikipedia's search API, and OpenStreetMap's Nominatim for local intent. So a query with no Wikipedia article returns little or nothing, and results are not ranked like a real search engine. Pages that exist only behind JavaScript, logins or `noindex` are invisible to it.
+- **There is no general web index.** Every tab calls a public, CORS-enabled API straight from the browser: Wikipedia for web results, Wikimedia Commons for images and video, Wikinews for headlines, and OpenStreetMap's Nominatim for nearby places. So a query with no matching article returns little or nothing, and nothing is ranked like a real search engine. Pages behind JavaScript, logins or `noindex` are invisible.
+- **The Videos tab is thin.** Commons holds relatively few video files, so expect sparse results until a search proxy is connected.
 - **Nominatim's usage policy caps this at roughly one request per second** and forbids heavy or bulk use. That is fine for a demo and not fine for real traffic — see below.
 - **No backend.** Sign-in, cross-device sync and scheduled email digests are specified but not implemented. "Email results" opens the user's mail client with the results pre-filled.
 - **No PWA manifest or service worker**, so no offline shell or install prompt.
