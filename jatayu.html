@@ -234,6 +234,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
       </div>
       <p class="qline" id="qline" aria-live="polite"></p>
       <div id="understood" class="status" hidden></div>
+      <p class="note" id="srcNote" style="text-align:start;margin:4px 0 14px"></p>
       <div id="list"></div>
     </section>
   </div>
@@ -244,6 +245,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
     <span>© Jatayu — prototype</span>
     <span class="spacer"></span>
     <span data-i18n="footerNote"></span>
+    <span style="width:100%;opacity:.8">Places &copy; OpenStreetMap contributors &middot; Summaries from Wikipedia, CC BY-SA</span>
   </div>
 </footer>
 
@@ -370,7 +372,8 @@ var I18N = {
     locDenied:"Location unavailable. Pick a city instead.", citySearch:"Search a city",
     saved_on:"Saved on this device", removed:"Removed", pinned:"Search saved",
     mailNote:"Opening your email app with these results.",
-    voiceFallback:"Sanskrit has no browser speech model, so it listens in Hindi."
+    voiceFallback:"Sanskrit has no browser speech model, so it listens in Hindi.",
+    searching:"Searching…", liveNote:"Live results from Wikipedia and OpenStreetMap.", offlineNote:"Live sources unreachable — showing the built-in demo dataset instead."
   },
   hi:{
     tagline:"जो औरों से छूट जाए, देखिए।",
@@ -395,7 +398,8 @@ var I18N = {
     locDenied:"लोकेशन नहीं मिली। कृपया शहर चुनें।", citySearch:"शहर खोजें",
     saved_on:"इस डिवाइस पर सहेजा", removed:"हटाया गया", pinned:"खोज सहेजी गई",
     mailNote:"आपके ईमेल ऐप में परिणाम खोले जा रहे हैं।",
-    voiceFallback:"संस्कृत के लिए ब्राउज़र में आवाज़ मॉडल नहीं है; हिन्दी में सुन रहे हैं।"
+    voiceFallback:"संस्कृत के लिए ब्राउज़र में आवाज़ मॉडल नहीं है; हिन्दी में सुन रहे हैं।",
+    searching:"खोज रहे हैं…", liveNote:"विकिपीडिया और ओपनस्ट्रीटमैप से सीधे परिणाम।", offlineNote:"लाइव स्रोत उपलब्ध नहीं — अंदरूनी डेमो डेटा दिखाया जा रहा है।"
   },
   mr:{
     tagline:"जे इतरांना दिसत नाही, ते पाहा.",
@@ -420,7 +424,8 @@ var I18N = {
     locDenied:"स्थान मिळाले नाही. कृपया शहर निवडा.", citySearch:"शहर शोधा",
     saved_on:"या डिव्हाइसवर साठवले", removed:"काढले", pinned:"शोध साठवला",
     mailNote:"तुमच्या ईमेल अ‍ॅपमध्ये निकाल उघडत आहोत.",
-    voiceFallback:"संस्कृतसाठी ब्राउझरमध्ये आवाज मॉडेल नाही; हिंदीत ऐकत आहे."
+    voiceFallback:"संस्कृतसाठी ब्राउझरमध्ये आवाज मॉडेल नाही; हिंदीत ऐकत आहे.",
+    searching:"शोधत आहोत…", liveNote:"विकिपीडिया आणि ओपनस्ट्रीटमॅपवरून थेट निकाल.", offlineNote:"लाइव्ह स्रोत उपलब्ध नाहीत — अंतर्गत डेमो डेटा दाखवत आहोत."
   },
   sa:{
     tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
@@ -445,7 +450,8 @@ var I18N = {
     radius:"परिधिः", locDenied:"स्थानं न प्राप्तम्। नगरं चिनु।", citySearch:"नगरम् अन्विष्य",
     saved_on:"अस्यां यन्त्रायां रक्षितम्", removed:"मार्जितम्", pinned:"अन्वेषणं रक्षितम्",
     mailNote:"ईपत्रे फलानि उद्घाट्यन्ते।",
-    voiceFallback:"संस्कृतभाषायै ब्राउज़रे वाग्मॉडेलं नास्ति; हिन्दीभाषया शृणोमि।"
+    voiceFallback:"संस्कृतभाषायै ब्राउज़रे वाग्मॉडेलं नास्ति; हिन्दीभाषया शृणोमि।",
+    searching:"अन्विष्यामि…", liveNote:"विकिपीडिया-ओपनस्ट्रीटम्याप्-तः प्रत्यक्षाणि फलानि।", offlineNote:"जीवन्तः स्रोतः न प्राप्तः — अन्तर्निहितः प्रारूपदत्तांशः दर्श्यते।"
   },
   es:{
     tagline:"Ve lo que otros no ven.",
@@ -470,7 +476,8 @@ var I18N = {
     locDenied:"Ubicación no disponible. Elige una ciudad.", citySearch:"Buscar una ciudad",
     saved_on:"Guardado en este dispositivo", removed:"Borrado", pinned:"Búsqueda guardada",
     mailNote:"Abriendo tu aplicación de correo con estos resultados.",
-    voiceFallback:"No hay reconocimiento de voz para sánscrito; se escucha en hindi."
+    voiceFallback:"No hay reconocimiento de voz para sánscrito; se escucha en hindi.",
+    searching:"Buscando…", liveNote:"Resultados en vivo de Wikipedia y OpenStreetMap.", offlineNote:"Fuentes en vivo no disponibles: se muestra el conjunto de datos de demostración."
   },
   fr:{
     tagline:"Voyez ce que les autres manquent.",
@@ -495,7 +502,8 @@ var I18N = {
     locDenied:"Position indisponible. Choisissez une ville.", citySearch:"Chercher une ville",
     saved_on:"Enregistré sur cet appareil", removed:"Effacé", pinned:"Recherche enregistrée",
     mailNote:"Ouverture de votre application de messagerie avec ces résultats.",
-    voiceFallback:"Aucune reconnaissance vocale pour le sanskrit ; écoute en hindi."
+    voiceFallback:"Aucune reconnaissance vocale pour le sanskrit ; écoute en hindi.",
+    searching:"Recherche…", liveNote:"Résultats en direct de Wikipédia et OpenStreetMap.", offlineNote:"Sources en direct indisponibles : jeu de données de démonstration affiché."
   },
   ar:{
     tagline:"أبصر ما يفوته الآخرون.",
@@ -520,7 +528,8 @@ var I18N = {
     locDenied:"الموقع غير متاح. اختر مدينة.", citySearch:"ابحث عن مدينة",
     saved_on:"محفوظ على هذا الجهاز", removed:"تم المسح", pinned:"تم حفظ البحث",
     mailNote:"جارٍ فتح تطبيق البريد مع هذه النتائج.",
-    voiceFallback:"لا يوجد نموذج صوتي للسنسكريت؛ الاستماع بالهندية."
+    voiceFallback:"لا يوجد نموذج صوتي للسنسكريت؛ الاستماع بالهندية.",
+    searching:"جارٍ البحث…", liveNote:"نتائج مباشرة من ويكيبيديا وخرائط الشوارع المفتوحة.", offlineNote:"المصادر المباشرة غير متاحة — تُعرض بيانات العرض التجريبي."
   },
   ja:{
     tagline:"他の人が見落とすものを見る。",
@@ -545,7 +554,8 @@ var I18N = {
     locDenied:"位置情報を取得できません。都市を選んでください。", citySearch:"都市を検索",
     saved_on:"この端末に保存済み", removed:"削除しました", pinned:"検索を保存しました",
     mailNote:"メールアプリで結果を開いています。",
-    voiceFallback:"サンスクリット語の音声認識はないため、ヒンディー語で聞き取ります。"
+    voiceFallback:"サンスクリット語の音声認識はないため、ヒンディー語で聞き取ります。",
+    searching:"検索中…", liveNote:"Wikipedia と OpenStreetMap からの最新結果です。", offlineNote:"ライブソースに接続できないため、内蔵のデモデータを表示しています。"
   },
   zh:{
     tagline:"看见别人错过的。",
@@ -570,7 +580,8 @@ var I18N = {
     locDenied:"无法获取位置，请选择城市。", citySearch:"搜索城市",
     saved_on:"已保存在本设备", removed:"已清除", pinned:"已保存搜索",
     mailNote:"正在用邮件应用打开这些结果。",
-    voiceFallback:"浏览器没有梵语语音模型，改用印地语识别。"
+    voiceFallback:"浏览器没有梵语语音模型，改用印地语识别。",
+    searching:"搜索中…", liveNote:"来自维基百科和 OpenStreetMap 的实时结果。", offlineNote:"无法连接实时来源，显示内置演示数据。"
   },
 };
 /* Which speech-recognition locale each UI language maps to. Sanskrit has no
@@ -605,6 +616,8 @@ var state = {
   tab: "all",
   results: [],
   lastQuery: "",
+  searchSeq: 0,
+  liveMode: false,
   imgURL: null
 };
 
@@ -867,49 +880,169 @@ function transliterate(q){
   return {text: out.join(" "), count: count, strong: strong};
 }
 
-function synth(q){
-  var s=q.trim();
-  return [
-    {title:s+" — Wikipedia",url:"https://en.wikipedia.org/wiki/Special:Search?search="+encodeURIComponent(s),
-     source:"Wikipedia",type:"web",keywords:"",snippet:"An overview of "+s+", with history, references and related topics from the free encyclopedia."},
-    {title:"Best "+s+" options in India — a practical guide",url:"https://example.in/guide?q="+encodeURIComponent(s),
-     source:"India Guide",type:"web",keywords:"",snippet:"What to look for when choosing "+s+" in India: prices in rupees, warranty, service network and local availability."},
-    {title:s+": latest news and updates",url:"https://example.in/news?q="+encodeURIComponent(s),
-     source:"Daily Desk",type:"news",keywords:"",snippet:"Recent coverage and analysis on "+s+" from across the country."}
-  ];
+/* ---------------------------------------------------------------
+   Live results.
+
+   There is no crawler behind this file, so results come from two
+   public, CORS-enabled sources:
+     - Wikipedia's search API, on the subdomain matching the UI language
+     - OpenStreetMap's Nominatim, bounded to the active radius, for
+       local intent
+   Both are called straight from the browser. If either is unreachable
+   the app falls back to the built-in demo dataset and says so, rather
+   than silently inventing results.
+   --------------------------------------------------------------- */
+var WIKI_LANG = {en:"en",hi:"hi",mr:"mr",sa:"sa",es:"es",fr:"fr",ar:"ar",ja:"ja",zh:"zh"};
+var memCache = {};
+
+function fetchJSON(url, ms){
+  var key = url;
+  if (memCache[key]) return Promise.resolve(memCache[key]);
+  return new Promise(function(resolve){
+    var settled = false;
+    var ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    var timer = setTimeout(function(){
+      if (settled) return; settled = true;
+      if (ctrl) { try { ctrl.abort(); } catch(e){} }
+      resolve(null);
+    }, ms || 7000);
+    var opts = {headers:{Accept:"application/json"}};
+    if (ctrl) opts.signal = ctrl.signal;
+    fetch(url, opts)
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if (settled) return; settled = true; clearTimeout(timer);
+        if (j) memCache[key] = j;
+        resolve(j);
+      })
+      .catch(function(){
+        if (settled) return; settled = true; clearTimeout(timer);
+        resolve(null);
+      });
+  });
+}
+
+function stripHtml(s){
+  var d = document.createElement("div");
+  d.innerHTML = s || "";
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function wikiSearch(q){
+  var lang = WIKI_LANG[state.lang] || "en";
+  var url = "https://" + lang + ".wikipedia.org/w/api.php?action=query&list=search" +
+            "&srsearch=" + encodeURIComponent(q) + "&srlimit=10&srprop=snippet" +
+            "&format=json&origin=*";
+  return fetchJSON(url, 7000).then(function(r){
+    if (!r || !r.query || !r.query.search) return [];
+    return r.query.search.map(function(hit){
+      return {
+        title: hit.title,
+        url: "https://" + lang + ".wikipedia.org/wiki/" +
+             encodeURIComponent(String(hit.title).replace(/ /g, "_")),
+        source: "Wikipedia",
+        type: "web",
+        snippet: stripHtml(hit.snippet) || ("Wikipedia article: " + hit.title)
+      };
+    });
+  });
+}
+
+/* "chai near me" -> "chai": local-intent words confuse a place search. */
+function placeQuery(q){
+  return q.replace(/\b(near|nearby|near me|around|in|me)\b/gi, " ")
+          .replace(/\b(paas|pas|najik|nazdeek|javal)\b/gi, " ")
+          .replace(/पास|जवळ|आसपास|जवळचे|नजीक/g, " ")
+          .replace(/\s+/g, " ").trim() || q;
+}
+
+function osmSearch(q, loc, radiusKm){
+  var dLat = radiusKm / 111;
+  var dLng = radiusKm / (111 * Math.max(0.2, Math.cos(loc.lat * Math.PI / 180)));
+  var viewbox = [loc.lng - dLng, loc.lat + dLat, loc.lng + dLng, loc.lat - dLat].join(",");
+  var url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=12" +
+            "&extratags=1&addressdetails=1&bounded=1&viewbox=" + viewbox +
+            "&q=" + encodeURIComponent(placeQuery(q));
+  return fetchJSON(url, 8000).then(function(arr){
+    if (!Array.isArray(arr)) return [];
+    return arr.map(function(p){
+      var lat = parseFloat(p.lat), lng = parseFloat(p.lon);
+      var parts = String(p.display_name || "").split(",");
+      return {
+        title: p.name || (parts[0] || "Place"),
+        url: "https://www.openstreetmap.org/?mlat=" + lat + "&mlon=" + lng +
+             "#map=18/" + lat + "/" + lng,
+        source: String(p.type || "place").replace(/_/g, " "),
+        type: "place",
+        snippet: parts.slice(1, 4).join(",").trim() || "OpenStreetMap place",
+        lat: lat, lng: lng,
+        distanceKm: haversine(loc, {lat: lat, lng: lng})
+      };
+    }).filter(function(p){
+      return isFinite(p.distanceKm) && p.distanceKm <= radiusKm + 0.5;
+    }).sort(function(a, b){ return a.distanceKm - b.distanceKm; });
+  });
+}
+
+/* Offline fallback: the original demo dataset, used only when live
+   sources cannot be reached. Never presented as live results. */
+function demoResults(q){
+  var terms = q.toLowerCase().split(/\s+/).filter(function(x){ return x.length > 1; });
+  var web = DATA.filter(function(d){
+    var hay = (d.title + " " + d.snippet + " " + d.keywords).toLowerCase();
+    return terms.some(function(term){ return hay.indexOf(term) > -1; });
+  });
+  var places = ALLPLACES.map(function(p){
+    var o = Object.assign({}, p);
+    if (state.loc) o.distanceKm = haversine(state.loc, p);
+    return o;
+  });
+  if (state.loc) {
+    places = places.filter(function(p){ return p.distanceKm <= state.radius; })
+                   .sort(function(a, b){ return a.distanceKm - b.distanceKm; });
+  } else {
+    places = places.slice(0, 4);
+  }
+  return web.concat(places.slice(0, 4));
 }
 
 function runSearch(q){
-  var terms=q.toLowerCase().split(/\s+/).filter(function(x){ return x.length>1; });
-  var local=isLocal(q);
-  var web=DATA.filter(function(d){
-    var hay=(d.title+" "+d.snippet+" "+d.keywords).toLowerCase();
-    return terms.some(function(term){ return hay.indexOf(term)>-1; });
+  var local = isLocal(q);
+  var wantPlaces = state.loc && (local || state.tab === "place");
+  var jobs = [wikiSearch(q)];
+  if (wantPlaces) jobs.push(osmSearch(q, state.loc, state.radius));
+
+  return Promise.all(jobs).then(function(res){
+    var web = res[0] || [];
+    var places = res[1] || [];
+    var live = (web.length > 0) || (places.length > 0);
+    var out;
+
+    if (live) {
+      out = local ? places.concat(web.slice(0, 6)) : web.concat(places.slice(0, 3));
+      state.liveMode = true;
+    } else {
+      out = demoResults(q);
+      state.liveMode = false;
+    }
+
+    if (state.tab === "news") out = out.filter(function(r){ return r.type === "news"; });
+    if (state.tab === "place") out = out.filter(function(r){ return r.type === "place"; });
+    return out;
   });
-  var places=ALLPLACES.map(function(p){
-    var o=Object.assign({},p);
-    if(state.loc) o.distanceKm=haversine(state.loc,p);
-    var hay=(p.title+" "+p.keywords+" "+p.snippet).toLowerCase();
-    o.score=terms.filter(function(term){ return hay.indexOf(term)>-1; }).length;
-    return o;
-  });
-  if(state.loc){
-    /* A relevant place beats a nearer irrelevant one: match count first,
-       distance second. */
-    places=places.filter(function(p){ return p.distanceKm<=state.radius; })
-                 .sort(function(a,b){ return (b.score-a.score) || (a.distanceKm-b.distanceKm); });
-  }else{
-    places=places.filter(function(p){ return p.score>0; }).slice(0,4);
-    if(!places.length) places=ALLPLACES.slice(0,4);
-  }
-  var out;
-  if(local && state.loc) out = places.concat(web.slice(0,4));
-  else if(local) out = web.concat(places.slice(0,4));
-  else out = web.concat(places.slice(0,3));
-  if(out.length<4) out = out.concat(synth(q));
-  if(state.tab==="news") out=out.filter(function(r){ return r.type==="news"; });
-  if(state.tab==="place") out=out.filter(function(r){ return r.type==="place"; });
-  return out;
+}
+
+function renderLoading(){
+  var list = $("#list");
+  var card = '<article class="card" aria-hidden="true">' +
+    '<div class="meta"><span class="fav"></span><span style="display:inline-block;width:90px;height:10px;' +
+    'background:var(--border);border-radius:4px"></span></div>' +
+    '<div style="height:14px;width:70%;background:var(--border);border-radius:4px;margin:8px 0"></div>' +
+    '<div style="height:10px;width:100%;background:var(--border);border-radius:4px;margin:6px 0"></div>' +
+    '<div style="height:10px;width:85%;background:var(--border);border-radius:4px"></div>' +
+    '</article>';
+  list.innerHTML = card + card + card;
+  $("#qline").textContent = t("searching");
 }
 
 /* ============================ render ============================ */
@@ -998,13 +1131,24 @@ function doSearch(q){
     u.hidden=false; u.textContent = t("understood")+": "+trans.text;
   }else{ u.hidden=true; }
 
-  state.results = runSearch(q);
   state.history = [q].concat(state.history.filter(function(h){ return h!==q; })).slice(0,20);
   saveJSON("jatayu.history",state.history);
-  showResults(); renderResults(); renderLocBar(); renderHistory();
+  showResults(); renderLocBar(); renderHistory();
+  renderLoading();
   document.title = q+" — Jatayu";
   window.scrollTo({top:0,behavior:"instant"});
   $("#q").blur();
+
+  /* Stale-response guard: a slow earlier search must not overwrite a
+     newer one. */
+  var seq = ++state.searchSeq;
+  runSearch(q).then(function(out){
+    if (seq !== state.searchSeq) return;
+    state.results = out;
+    renderResults();
+    var note = $("#srcNote");
+    if (note) note.textContent = state.liveMode ? t("liveNote") : t("offlineNote");
+  });
 }
 
 function setLocation(loc){
