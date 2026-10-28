@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jatayu — see what others miss</title>
 <meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jatayu">
 <!-- Paste your search-proxy URL here to get real web results. See worker/README.md -->
 <meta name="jatayu-proxy" content="">
 <style>
@@ -230,6 +234,7 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
 
 <main>
   <div class="wrap">
+    <div class="warnbox" id="offlineBar" hidden role="status" aria-live="polite" style="margin:12px 0 0"></div>
     <!-- HOME -->
     <section id="home">
       <h1 class="logo">Jatayu</h1>
@@ -245,6 +250,7 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
 
       <div class="chips">
         <button class="chip" id="nearChip" data-i18n="near"></button>
+        <button class="chip" id="installBtn" hidden data-i18n="installApp"></button>
         <button class="chip" id="voiceLangChip" title="Voice language"><span data-i18n="voiceLang"></span> · <span id="voiceLangLabel">en-IN</span></button>
       </div>
 
@@ -479,7 +485,8 @@ var I18N = {
     sourcesLabel:"Sources",
     signIn:"Sign in", signOut:"Sign out", emailLabel:"Email address", continueBtn:"Continue", cancelBtn:"Cancel", signedInAs:"Signed in as", localOnlyNote:"No server yet — this signs you in on this device only. Cross-device sync arrives with the backend.", savedCount:"Saved searches",
     codeLabel:"6-digit code", verifyBtn:"Verify", codeSentTo:"We sent a code to", authFailed:"Could not sign in. Check the code and try again.",
-    indexLabel:"Search index URL", indexTest:"Test", noIndexBanner:"Showing Wikipedia and Wikinews only, not the wider web. Add a search index URL in Settings to get real web results."
+    indexLabel:"Search index URL", indexTest:"Test", noIndexBanner:"Showing Wikipedia and Wikinews only, not the wider web. Add a search index URL in Settings to get real web results.",
+    installApp:"Install app", offlineNote:"You are offline. Showing the cached page; searching needs a connection."
   },
   hi:{
     tagline:"जो औरों से छूट जाए, देखिए।",
@@ -510,7 +517,8 @@ var I18N = {
     sourcesLabel:"स्रोत",
     signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पता", continueBtn:"आगे बढ़ें", cancelBtn:"रद्द करें", signedInAs:"साइन इन किया गया:", localOnlyNote:"अभी सर्वर नहीं है — यह साइन इन सिर्फ़ इसी डिवाइस पर है। दूसरे डिवाइस पर सिंक बैकएंड आने पर होगा।", savedCount:"सहेजी खोजें",
     codeLabel:"6 अंकों का कोड", verifyBtn:"सत्यापित करें", codeSentTo:"कोड भेजा गया:", authFailed:"साइन इन नहीं हो सका। कोड जाँचें और फिर कोशिश करें।",
-    indexLabel:"सर्च इंडेक्स URL", indexTest:"जाँचें", noIndexBanner:"अभी सिर्फ़ विकिपीडिया और विकिन्यूज़ दिख रहे हैं, पूरा वेब नहीं। असली वेब परिणामों के लिए सेटिंग्स में सर्च इंडेक्स URL जोड़ें।"
+    indexLabel:"सर्च इंडेक्स URL", indexTest:"जाँचें", noIndexBanner:"अभी सिर्फ़ विकिपीडिया और विकिन्यूज़ दिख रहे हैं, पूरा वेब नहीं। असली वेब परिणामों के लिए सेटिंग्स में सर्च इंडेक्स URL जोड़ें।",
+    installApp:"ऐप इंस्टॉल करें", offlineNote:"आप ऑफ़लाइन हैं। कैश किया पेज दिख रहा है; खोज के लिए इंटरनेट चाहिए।"
   },
   mr:{
     tagline:"जे इतरांना दिसत नाही, ते पाहा.",
@@ -541,7 +549,8 @@ var I18N = {
     sourcesLabel:"स्रोत",
     signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पत्ता", continueBtn:"पुढे जा", cancelBtn:"रद्द करा", signedInAs:"साइन इन केले:", localOnlyNote:"सध्या सर्व्हर नाही — हे साइन इन फक्त या डिव्हाइसवर आहे. इतर डिव्हाइसवर सिंक बॅकएंड आल्यावर होईल.", savedCount:"साठवलेले शोध",
     codeLabel:"6 अंकांचा कोड", verifyBtn:"पडताळा", codeSentTo:"कोड पाठवला:", authFailed:"साइन इन होऊ शकले नाही. कोड तपासा आणि पुन्हा प्रयत्न करा.",
-    indexLabel:"सर्च इंडेक्स URL", indexTest:"तपासा", noIndexBanner:"सध्या फक्त विकिपीडिया आणि विकिन्यूज दिसत आहेत, संपूर्ण वेब नाही. खरे वेब निकालांसाठी सेटिंग्जमध्ये सर्च इंडेक्स URL जोडा."
+    indexLabel:"सर्च इंडेक्स URL", indexTest:"तपासा", noIndexBanner:"सध्या फक्त विकिपीडिया आणि विकिन्यूज दिसत आहेत, संपूर्ण वेब नाही. खरे वेब निकालांसाठी सेटिंग्जमध्ये सर्च इंडेक्स URL जोडा.",
+    installApp:"अ‍ॅप इंस्टॉल करा", offlineNote:"तुम्ही ऑफलाइन आहात. कॅशे केलेले पान दिसत आहे; शोधासाठी इंटरनेट लागेल."
   },
   sa:{
     tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
@@ -572,7 +581,8 @@ var I18N = {
     sourcesLabel:"स्रोतः",
     signIn:"प्रवेशः", signOut:"निर्गमः", emailLabel:"ईपत्रसङ्केतः", continueBtn:"अग्रे", cancelBtn:"निरस्तम्", signedInAs:"प्रवेशितः", localOnlyNote:"सेवकः नास्ति — प्रवेशः अस्मिन् यन्त्र एव। अन्यत्र सङ्क्रमणं पश्चात्।", savedCount:"रक्षितानि अन्वेषणानि",
     codeLabel:"षडङ्कसङ्केतः", verifyBtn:"सत्यापय", codeSentTo:"सङ्केतः प्रेषितः", authFailed:"प्रवेशः न जातः। सङ्केतं परीक्ष्य पुनः यतस्व।",
-    indexLabel:"अन्वेषणसूची-सङ्केतः", indexTest:"परीक्षय", noIndexBanner:"इदानीं केवलं विकिपीडिया-विकिन्यूज़् दृश्येते, न विस्तृतं जालम्। वास्तविकजालफलानि प्राप्तुं विन्यासेषु सूची-सङ्केतं योजय।"
+    indexLabel:"अन्वेषणसूची-सङ्केतः", indexTest:"परीक्षय", noIndexBanner:"इदानीं केवलं विकिपीडिया-विकिन्यूज़् दृश्येते, न विस्तृतं जालम्। वास्तविकजालफलानि प्राप्तुं विन्यासेषु सूची-सङ्केतं योजय।",
+    installApp:"यन्त्रकम् आरोपय", offlineNote:"भवान् जालरहितः। सङ्गृहीतं पृष्ठं दृश्यते; अन्वेषणाय जालम् आवश्यकम्।"
   },
   es:{
     tagline:"Ve lo que otros no ven.",
@@ -603,7 +613,8 @@ var I18N = {
     sourcesLabel:"Fuentes",
     signIn:"Iniciar sesión", signOut:"Cerrar sesión", emailLabel:"Correo electrónico", continueBtn:"Continuar", cancelBtn:"Cancelar", signedInAs:"Sesión iniciada como", localOnlyNote:"Aún no hay servidor: la sesión es solo en este dispositivo. La sincronización llegará con el backend.", savedCount:"Búsquedas guardadas",
     codeLabel:"Código de 6 dígitos", verifyBtn:"Verificar", codeSentTo:"Enviamos un código a", authFailed:"No se pudo iniciar sesión. Revisa el código e inténtalo de nuevo.",
-    indexLabel:"URL del índice de búsqueda", indexTest:"Probar", noIndexBanner:"Solo se muestran Wikipedia y Wikinews, no la web completa. Añade una URL de índice en Ajustes para obtener resultados web reales."
+    indexLabel:"URL del índice de búsqueda", indexTest:"Probar", noIndexBanner:"Solo se muestran Wikipedia y Wikinews, no la web completa. Añade una URL de índice en Ajustes para obtener resultados web reales.",
+    installApp:"Instalar aplicación", offlineNote:"Sin conexión. Mostrando la página guardada; buscar requiere conexión."
   },
   fr:{
     tagline:"Voyez ce que les autres manquent.",
@@ -634,7 +645,8 @@ var I18N = {
     sourcesLabel:"Sources",
     signIn:"Se connecter", signOut:"Se déconnecter", emailLabel:"Adresse e-mail", continueBtn:"Continuer", cancelBtn:"Annuler", signedInAs:"Connecté en tant que", localOnlyNote:"Pas encore de serveur : la connexion ne vaut que pour cet appareil. La synchronisation viendra avec le backend.", savedCount:"Recherches enregistrées",
     codeLabel:"Code à 6 chiffres", verifyBtn:"Vérifier", codeSentTo:"Nous avons envoyé un code à", authFailed:"Connexion impossible. Vérifiez le code et réessayez.",
-    indexLabel:"URL de l index de recherche", indexTest:"Tester", noIndexBanner:"Seuls Wikipédia et Wikinews sont affichés, pas le web entier. Ajoutez une URL d index dans Réglages pour de vrais résultats web."
+    indexLabel:"URL de l index de recherche", indexTest:"Tester", noIndexBanner:"Seuls Wikipédia et Wikinews sont affichés, pas le web entier. Ajoutez une URL d index dans Réglages pour de vrais résultats web.",
+    installApp:"Installer l application", offlineNote:"Vous êtes hors ligne. Page en cache affichée ; la recherche nécessite une connexion."
   },
   ar:{
     tagline:"أبصر ما يفوته الآخرون.",
@@ -665,7 +677,8 @@ var I18N = {
     sourcesLabel:"المصادر",
     signIn:"تسجيل الدخول", signOut:"تسجيل الخروج", emailLabel:"البريد الإلكتروني", continueBtn:"متابعة", cancelBtn:"إلغاء", signedInAs:"مسجّل الدخول باسم", localOnlyNote:"لا يوجد خادم بعد — تسجيل الدخول على هذا الجهاز فقط. ستأتي المزامنة مع الخادم.", savedCount:"عمليات البحث المحفوظة",
     codeLabel:"رمز من 6 أرقام", verifyBtn:"تحقق", codeSentTo:"أرسلنا رمزاً إلى", authFailed:"تعذّر تسجيل الدخول. تحقق من الرمز وحاول مجدداً.",
-    indexLabel:"رابط فهرس البحث", indexTest:"اختبار", noIndexBanner:"تظهر ويكيبيديا وويكينيوز فقط، وليس الويب الكامل. أضف رابط فهرس في الإعدادات للحصول على نتائج ويب حقيقية."
+    indexLabel:"رابط فهرس البحث", indexTest:"اختبار", noIndexBanner:"تظهر ويكيبيديا وويكينيوز فقط، وليس الويب الكامل. أضف رابط فهرس في الإعدادات للحصول على نتائج ويب حقيقية.",
+    installApp:"تثبيت التطبيق", offlineNote:"أنت غير متصل. تُعرض النسخة المحفوظة، والبحث يحتاج اتصالاً."
   },
   ja:{
     tagline:"他の人が見落とすものを見る。",
@@ -696,7 +709,8 @@ var I18N = {
     sourcesLabel:"出典",
     signIn:"サインイン", signOut:"サインアウト", emailLabel:"メールアドレス", continueBtn:"続行", cancelBtn:"キャンセル", signedInAs:"サインイン中:", localOnlyNote:"サーバーはまだありません。この端末内だけのサインインです。端末間の同期はバックエンド導入後に有効になります。", savedCount:"保存した検索",
     codeLabel:"6桁のコード", verifyBtn:"確認", codeSentTo:"コードを送信しました:", authFailed:"サインインできませんでした。コードを確認して再試行してください。",
-    indexLabel:"検索インデックスの URL", indexTest:"テスト", noIndexBanner:"表示しているのは Wikipedia と Wikinews のみで、ウェブ全体ではありません。設定で検索インデックスの URL を追加すると実際のウェブ結果が得られます。"
+    indexLabel:"検索インデックスの URL", indexTest:"テスト", noIndexBanner:"表示しているのは Wikipedia と Wikinews のみで、ウェブ全体ではありません。設定で検索インデックスの URL を追加すると実際のウェブ結果が得られます。",
+    installApp:"アプリをインストール", offlineNote:"オフラインです。保存されたページを表示しています。検索には接続が必要です。"
   },
   zh:{
     tagline:"看见别人错过的。",
@@ -727,7 +741,8 @@ var I18N = {
     sourcesLabel:"来源",
     signIn:"登录", signOut:"退出", emailLabel:"邮箱地址", continueBtn:"继续", cancelBtn:"取消", signedInAs:"已登录：", localOnlyNote:"尚未接入服务器——登录仅限本设备。跨设备同步将在后端接入后提供。", savedCount:"已保存的搜索",
     codeLabel:"6 位验证码", verifyBtn:"验证", codeSentTo:"验证码已发送至", authFailed:"无法登录，请检查验证码后重试。",
-    indexLabel:"搜索索引地址", indexTest:"测试", noIndexBanner:"当前仅显示维基百科和维基新闻，而非整个网络。在设置中添加搜索索引地址即可获得真实网页结果。"
+    indexLabel:"搜索索引地址", indexTest:"测试", noIndexBanner:"当前仅显示维基百科和维基新闻，而非整个网络。在设置中添加搜索索引地址即可获得真实网页结果。",
+    installApp:"安装应用", offlineNote:"当前离线，显示已缓存的页面；搜索需要联网。"
   },
 };
 /* Which speech-recognition locale each UI language maps to. Sanskrit has no
@@ -1991,6 +2006,40 @@ function init(){
         renderAccount();
       }
     });
+  }
+
+  /* ---------- installable / offline ---------- */
+  var deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", function(ev){
+    ev.preventDefault();
+    deferredPrompt = ev;
+    if (!matchMedia("(display-mode: standalone)").matches) $("#installBtn").hidden = false;
+  });
+  $("#installBtn").addEventListener("click", function(){
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){
+      deferredPrompt = null;
+      $("#installBtn").hidden = true;
+    });
+  });
+  window.addEventListener("appinstalled", function(){ $("#installBtn").hidden = true; });
+  if (matchMedia("(display-mode: standalone)").matches) $("#installBtn").hidden = true;
+
+  function updateOffline(){
+    var bar = $("#offlineBar");
+    if (!bar) return;
+    bar.hidden = navigator.onLine;
+    bar.textContent = t("offlineNote");
+  }
+  window.addEventListener("online", updateOffline);
+  window.addEventListener("offline", updateOffline);
+  updateOffline();
+
+  if ("serviceWorker" in navigator &&
+      (location.protocol === "https:" || location.hostname === "localhost" ||
+       location.hostname === "127.0.0.1")) {
+    navigator.serviceWorker.register("./sw.js").catch(function(){ /* offline shell is a bonus, not a requirement */ });
   }
 
   /* restore stored background image */
