@@ -13,6 +13,16 @@ results come from a real web index.
 
 ## Deploy
 
+**Fastest route — no terminal.** Cloudflare can create the worker straight from this repo:
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/
+
+It will ask you to sign in, then prompt for the secrets (`BRAVE_API_KEY` or `SEARXNG_URL`).
+Afterwards, open the D1 database it created and run `schema.sql` once, or skip accounts for
+now and use search only.
+
+**Or from the command line:**
+
 ```bash
 npm install -g wrangler
 wrangler login
