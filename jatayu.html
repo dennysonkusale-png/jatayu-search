@@ -286,6 +286,10 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
       <p class="qline" id="qline" aria-live="polite"></p>
       <div id="understood" class="status" hidden></div>
       <p class="note" id="srcNote" style="text-align:start;margin:4px 0 14px"></p>
+      <div class="warnbox" id="noIndex" hidden style="margin:0 0 14px">
+        <span id="noIndexText"></span>
+        <div class="btnrow"><button class="btn" id="openIndexSettings" data-i18n="indexLabel"></button></div>
+      </div>
       <div id="list"></div>
     </section>
   </div>
@@ -370,6 +374,17 @@ body.view-results select.lang{max-width:96px;padding:6px 6px;font-size:13px}
     <button class="btn" id="importBtn" data-i18n="importT"></button>
     <input type="file" id="importFile" accept="application/json" hidden>
     <button class="btn" id="resetBtn" data-i18n="reset"></button>
+  </div>
+
+  <h5 data-i18n="indexLabel"></h5>
+  <div class="field">
+    <label data-i18n="indexLabel"></label>
+    <input type="text" id="apiUrl" placeholder="https://jatayu-search-proxy.you.workers.dev">
+    <div class="btnrow">
+      <button class="btn primary" id="apiSave" data-i18n="continueBtn"></button>
+      <button class="btn" id="apiTest" data-i18n="indexTest"></button>
+    </div>
+    <div class="hint" id="apiStatus"></div>
   </div>
 
   <h5 data-i18n="language"></h5>
@@ -463,7 +478,8 @@ var I18N = {
     images:"Images", videos:"Videos", needLocation:"Set a location to see nearby places.", tabEmpty:"Nothing here yet for this query. Try different words.",
     sourcesLabel:"Sources",
     signIn:"Sign in", signOut:"Sign out", emailLabel:"Email address", continueBtn:"Continue", cancelBtn:"Cancel", signedInAs:"Signed in as", localOnlyNote:"No server yet — this signs you in on this device only. Cross-device sync arrives with the backend.", savedCount:"Saved searches",
-    codeLabel:"6-digit code", verifyBtn:"Verify", codeSentTo:"We sent a code to", authFailed:"Could not sign in. Check the code and try again."
+    codeLabel:"6-digit code", verifyBtn:"Verify", codeSentTo:"We sent a code to", authFailed:"Could not sign in. Check the code and try again.",
+    indexLabel:"Search index URL", indexTest:"Test", noIndexBanner:"Showing Wikipedia and Wikinews only, not the wider web. Add a search index URL in Settings to get real web results."
   },
   hi:{
     tagline:"जो औरों से छूट जाए, देखिए।",
@@ -493,7 +509,8 @@ var I18N = {
     images:"चित्र", videos:"वीडियो", needLocation:"आसपास की जगहें देखने के लिए लोकेशन चुनें।", tabEmpty:"इस खोज के लिए यहाँ कुछ नहीं मिला। दूसरे शब्द आज़माएँ।",
     sourcesLabel:"स्रोत",
     signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पता", continueBtn:"आगे बढ़ें", cancelBtn:"रद्द करें", signedInAs:"साइन इन किया गया:", localOnlyNote:"अभी सर्वर नहीं है — यह साइन इन सिर्फ़ इसी डिवाइस पर है। दूसरे डिवाइस पर सिंक बैकएंड आने पर होगा।", savedCount:"सहेजी खोजें",
-    codeLabel:"6 अंकों का कोड", verifyBtn:"सत्यापित करें", codeSentTo:"कोड भेजा गया:", authFailed:"साइन इन नहीं हो सका। कोड जाँचें और फिर कोशिश करें।"
+    codeLabel:"6 अंकों का कोड", verifyBtn:"सत्यापित करें", codeSentTo:"कोड भेजा गया:", authFailed:"साइन इन नहीं हो सका। कोड जाँचें और फिर कोशिश करें।",
+    indexLabel:"सर्च इंडेक्स URL", indexTest:"जाँचें", noIndexBanner:"अभी सिर्फ़ विकिपीडिया और विकिन्यूज़ दिख रहे हैं, पूरा वेब नहीं। असली वेब परिणामों के लिए सेटिंग्स में सर्च इंडेक्स URL जोड़ें।"
   },
   mr:{
     tagline:"जे इतरांना दिसत नाही, ते पाहा.",
@@ -523,7 +540,8 @@ var I18N = {
     images:"चित्रे", videos:"व्हिडिओ", needLocation:"जवळची ठिकाणे पाहण्यासाठी स्थान निवडा.", tabEmpty:"या शोधासाठी येथे काहीही सापडले नाही. वेगळे शब्द वापरून पहा.",
     sourcesLabel:"स्रोत",
     signIn:"साइन इन", signOut:"साइन आउट", emailLabel:"ईमेल पत्ता", continueBtn:"पुढे जा", cancelBtn:"रद्द करा", signedInAs:"साइन इन केले:", localOnlyNote:"सध्या सर्व्हर नाही — हे साइन इन फक्त या डिव्हाइसवर आहे. इतर डिव्हाइसवर सिंक बॅकएंड आल्यावर होईल.", savedCount:"साठवलेले शोध",
-    codeLabel:"6 अंकांचा कोड", verifyBtn:"पडताळा", codeSentTo:"कोड पाठवला:", authFailed:"साइन इन होऊ शकले नाही. कोड तपासा आणि पुन्हा प्रयत्न करा."
+    codeLabel:"6 अंकांचा कोड", verifyBtn:"पडताळा", codeSentTo:"कोड पाठवला:", authFailed:"साइन इन होऊ शकले नाही. कोड तपासा आणि पुन्हा प्रयत्न करा.",
+    indexLabel:"सर्च इंडेक्स URL", indexTest:"तपासा", noIndexBanner:"सध्या फक्त विकिपीडिया आणि विकिन्यूज दिसत आहेत, संपूर्ण वेब नाही. खरे वेब निकालांसाठी सेटिंग्जमध्ये सर्च इंडेक्स URL जोडा."
   },
   sa:{
     tagline:"यत् अन्यैः न दृष्टम्, तत् पश्य।",
@@ -553,7 +571,8 @@ var I18N = {
     images:"चित्राणि", videos:"चलच्चित्राणि", needLocation:"समीपस्थानानि द्रष्टुं स्थानं चिनु।", tabEmpty:"अस्य अन्वेषणस्य कृते अत्र किमपि न प्राप्तम्। अन्यानि पदानि प्रयुङ्क्ष्व।",
     sourcesLabel:"स्रोतः",
     signIn:"प्रवेशः", signOut:"निर्गमः", emailLabel:"ईपत्रसङ्केतः", continueBtn:"अग्रे", cancelBtn:"निरस्तम्", signedInAs:"प्रवेशितः", localOnlyNote:"सेवकः नास्ति — प्रवेशः अस्मिन् यन्त्र एव। अन्यत्र सङ्क्रमणं पश्चात्।", savedCount:"रक्षितानि अन्वेषणानि",
-    codeLabel:"षडङ्कसङ्केतः", verifyBtn:"सत्यापय", codeSentTo:"सङ्केतः प्रेषितः", authFailed:"प्रवेशः न जातः। सङ्केतं परीक्ष्य पुनः यतस्व।"
+    codeLabel:"षडङ्कसङ्केतः", verifyBtn:"सत्यापय", codeSentTo:"सङ्केतः प्रेषितः", authFailed:"प्रवेशः न जातः। सङ्केतं परीक्ष्य पुनः यतस्व।",
+    indexLabel:"अन्वेषणसूची-सङ्केतः", indexTest:"परीक्षय", noIndexBanner:"इदानीं केवलं विकिपीडिया-विकिन्यूज़् दृश्येते, न विस्तृतं जालम्। वास्तविकजालफलानि प्राप्तुं विन्यासेषु सूची-सङ्केतं योजय।"
   },
   es:{
     tagline:"Ve lo que otros no ven.",
@@ -583,7 +602,8 @@ var I18N = {
     images:"Imágenes", videos:"Vídeos", needLocation:"Elige una ubicación para ver lugares cercanos.", tabEmpty:"Aquí no hay nada para esta búsqueda. Prueba otras palabras.",
     sourcesLabel:"Fuentes",
     signIn:"Iniciar sesión", signOut:"Cerrar sesión", emailLabel:"Correo electrónico", continueBtn:"Continuar", cancelBtn:"Cancelar", signedInAs:"Sesión iniciada como", localOnlyNote:"Aún no hay servidor: la sesión es solo en este dispositivo. La sincronización llegará con el backend.", savedCount:"Búsquedas guardadas",
-    codeLabel:"Código de 6 dígitos", verifyBtn:"Verificar", codeSentTo:"Enviamos un código a", authFailed:"No se pudo iniciar sesión. Revisa el código e inténtalo de nuevo."
+    codeLabel:"Código de 6 dígitos", verifyBtn:"Verificar", codeSentTo:"Enviamos un código a", authFailed:"No se pudo iniciar sesión. Revisa el código e inténtalo de nuevo.",
+    indexLabel:"URL del índice de búsqueda", indexTest:"Probar", noIndexBanner:"Solo se muestran Wikipedia y Wikinews, no la web completa. Añade una URL de índice en Ajustes para obtener resultados web reales."
   },
   fr:{
     tagline:"Voyez ce que les autres manquent.",
@@ -613,7 +633,8 @@ var I18N = {
     images:"Images", videos:"Vidéos", needLocation:"Choisissez un lieu pour voir les endroits à proximité.", tabEmpty:"Rien ici pour cette recherche. Essayez d autres mots.",
     sourcesLabel:"Sources",
     signIn:"Se connecter", signOut:"Se déconnecter", emailLabel:"Adresse e-mail", continueBtn:"Continuer", cancelBtn:"Annuler", signedInAs:"Connecté en tant que", localOnlyNote:"Pas encore de serveur : la connexion ne vaut que pour cet appareil. La synchronisation viendra avec le backend.", savedCount:"Recherches enregistrées",
-    codeLabel:"Code à 6 chiffres", verifyBtn:"Vérifier", codeSentTo:"Nous avons envoyé un code à", authFailed:"Connexion impossible. Vérifiez le code et réessayez."
+    codeLabel:"Code à 6 chiffres", verifyBtn:"Vérifier", codeSentTo:"Nous avons envoyé un code à", authFailed:"Connexion impossible. Vérifiez le code et réessayez.",
+    indexLabel:"URL de l index de recherche", indexTest:"Tester", noIndexBanner:"Seuls Wikipédia et Wikinews sont affichés, pas le web entier. Ajoutez une URL d index dans Réglages pour de vrais résultats web."
   },
   ar:{
     tagline:"أبصر ما يفوته الآخرون.",
@@ -643,7 +664,8 @@ var I18N = {
     images:"صور", videos:"فيديوهات", needLocation:"اختر موقعاً لعرض الأماكن القريبة.", tabEmpty:"لا شيء هنا لهذا البحث. جرّب كلمات أخرى.",
     sourcesLabel:"المصادر",
     signIn:"تسجيل الدخول", signOut:"تسجيل الخروج", emailLabel:"البريد الإلكتروني", continueBtn:"متابعة", cancelBtn:"إلغاء", signedInAs:"مسجّل الدخول باسم", localOnlyNote:"لا يوجد خادم بعد — تسجيل الدخول على هذا الجهاز فقط. ستأتي المزامنة مع الخادم.", savedCount:"عمليات البحث المحفوظة",
-    codeLabel:"رمز من 6 أرقام", verifyBtn:"تحقق", codeSentTo:"أرسلنا رمزاً إلى", authFailed:"تعذّر تسجيل الدخول. تحقق من الرمز وحاول مجدداً."
+    codeLabel:"رمز من 6 أرقام", verifyBtn:"تحقق", codeSentTo:"أرسلنا رمزاً إلى", authFailed:"تعذّر تسجيل الدخول. تحقق من الرمز وحاول مجدداً.",
+    indexLabel:"رابط فهرس البحث", indexTest:"اختبار", noIndexBanner:"تظهر ويكيبيديا وويكينيوز فقط، وليس الويب الكامل. أضف رابط فهرس في الإعدادات للحصول على نتائج ويب حقيقية."
   },
   ja:{
     tagline:"他の人が見落とすものを見る。",
@@ -673,7 +695,8 @@ var I18N = {
     images:"画像", videos:"動画", needLocation:"近くの場所を見るには位置情報を設定してください。", tabEmpty:"この検索に該当するものはありません。別の言葉をお試しください。",
     sourcesLabel:"出典",
     signIn:"サインイン", signOut:"サインアウト", emailLabel:"メールアドレス", continueBtn:"続行", cancelBtn:"キャンセル", signedInAs:"サインイン中:", localOnlyNote:"サーバーはまだありません。この端末内だけのサインインです。端末間の同期はバックエンド導入後に有効になります。", savedCount:"保存した検索",
-    codeLabel:"6桁のコード", verifyBtn:"確認", codeSentTo:"コードを送信しました:", authFailed:"サインインできませんでした。コードを確認して再試行してください。"
+    codeLabel:"6桁のコード", verifyBtn:"確認", codeSentTo:"コードを送信しました:", authFailed:"サインインできませんでした。コードを確認して再試行してください。",
+    indexLabel:"検索インデックスの URL", indexTest:"テスト", noIndexBanner:"表示しているのは Wikipedia と Wikinews のみで、ウェブ全体ではありません。設定で検索インデックスの URL を追加すると実際のウェブ結果が得られます。"
   },
   zh:{
     tagline:"看见别人错过的。",
@@ -703,7 +726,8 @@ var I18N = {
     images:"图片", videos:"视频", needLocation:"设置位置以查看附近地点。", tabEmpty:"此搜索暂无内容，试试其他词。",
     sourcesLabel:"来源",
     signIn:"登录", signOut:"退出", emailLabel:"邮箱地址", continueBtn:"继续", cancelBtn:"取消", signedInAs:"已登录：", localOnlyNote:"尚未接入服务器——登录仅限本设备。跨设备同步将在后端接入后提供。", savedCount:"已保存的搜索",
-    codeLabel:"6 位验证码", verifyBtn:"验证", codeSentTo:"验证码已发送至", authFailed:"无法登录，请检查验证码后重试。"
+    codeLabel:"6 位验证码", verifyBtn:"验证", codeSentTo:"验证码已发送至", authFailed:"无法登录，请检查验证码后重试。",
+    indexLabel:"搜索索引地址", indexTest:"测试", noIndexBanner:"当前仅显示维基百科和维基新闻，而非整个网络。在设置中添加搜索索引地址即可获得真实网页结果。"
   },
 };
 /* Which speech-recognition locale each UI language maps to. Sanskrit has no
@@ -739,6 +763,7 @@ var state = {
   results: [],
   lastQuery: "",
   searchSeq: 0,
+  indexProvider: "",
   session: null,
   liveMode: false,
   imgURL: null
@@ -1015,10 +1040,20 @@ function transliterate(q){
    the app falls back to the built-in demo dataset and says so, rather
    than silently inventing results.
    --------------------------------------------------------------- */
-var PROXY = (function(){
+var META_PROXY = (function(){
   var m = document.querySelector('meta[name="jatayu-proxy"]');
   return (m && m.content) ? m.content.replace(/\/$/, "") : "";
 })();
+
+/* The index URL can be set three ways, in order of precedence:
+     1. the value saved in Settings on this device
+     2. the <meta name="jatayu-proxy"> tag in this file
+     3. nothing — the app then uses Wikipedia and says so */
+function apiBase(){
+  var saved = "";
+  try { saved = localStorage.getItem("jatayu.api") || ""; } catch (e) {}
+  return (saved || META_PROXY || "").replace(/\/$/, "");
+}
 
 var WIKI_LANG = {en:"en",hi:"hi",mr:"mr",sa:"sa",es:"es",fr:"fr",ar:"ar",ja:"ja",zh:"zh"};
 var memCache = {};
@@ -1060,10 +1095,12 @@ function stripHtml(s){
    real web index. Wikipedia remains the fallback, and the default when no
    proxy is set. */
 function proxySearch(q){
-  if (!PROXY) return Promise.resolve([]);
-  var url = PROXY + (PROXY.indexOf("?") > -1 ? "&" : "?") + "q=" + encodeURIComponent(q);
+  var base = apiBase();
+  if (!base) return Promise.resolve([]);
+  var url = base + (base.indexOf("?") > -1 ? "&" : "?") + "q=" + encodeURIComponent(q);
   return fetchJSON(url, 9000).then(function(r){
     if (!r || !Array.isArray(r.results)) return [];
+    state.indexProvider = r.source ? String(r.source) : "";
     return r.results.map(function(hit){
       return {
         title: hit.title || hit.url,
@@ -1245,6 +1282,10 @@ function runSearch(q){
   });
 }
 
+function prettyProvider(s){
+  return s === "searxng" ? "SearXNG" : s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 /* Credit the source that actually produced these results. */
 function sourceNames(results){
   var names = [], seen = {};
@@ -1252,7 +1293,8 @@ function sourceNames(results){
     var name = r.type === "place" ? "OpenStreetMap"
              : (r.type === "image" || r.type === "video") ? "Wikimedia Commons"
              : r.type === "news" ? "Wikinews"
-             : (r.source === "Wikipedia" ? "Wikipedia" : "Web");
+             : (r.source === "Wikipedia" ? "Wikipedia"
+                : (state.indexProvider ? prettyProvider(state.indexProvider) : "Web"));
     if (!seen[name]) { seen[name] = 1; names.push(name); }
   });
   return names;
@@ -1420,6 +1462,11 @@ function doSearch(q){
       note.textContent = state.liveMode
         ? t("sourcesLabel") + ": " + names.join(", ")
         : t("offlineNote");
+      var banner = $("#noIndex");
+      if (banner) {
+        banner.hidden = !!apiBase();
+        $("#noIndexText").textContent = t("noIndexBanner");
+      }
     }
   });
 }
@@ -1511,7 +1558,6 @@ function emailResults(){
 
    The page never sees a token, so there is nothing here for an XSS bug to
    steal — which is the reason for using a cookie rather than localStorage. */
-var API = PROXY;
 
 function apiFetch(path, opts){
   opts = opts || {};
@@ -1520,7 +1566,7 @@ function apiFetch(path, opts){
     opts.body = JSON.stringify(opts.body);
     opts.headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
   }
-  return fetch(API + path, opts).then(function(r){
+  return fetch(apiBase() + path, opts).then(function(r){
     return r.json().then(function(j){ return { ok: r.ok, status: r.status, body: j || {} }; })
                     .catch(function(){ return { ok: r.ok, status: r.status, body: {} }; });
   }).catch(function(){ return { ok: false, status: 0, body: {} }; });
@@ -1572,7 +1618,7 @@ function finishSignIn(email){
   renderAccount();
   closeAuth();
   setStatus(t("signedInAs") + " " + email, false);
-  if (API) loadServerSearches();
+  if (apiBase()) loadServerSearches();
 }
 async function submitAuth(){
   var email = ($("#authEmail").value || "").trim().toLowerCase();
@@ -1582,7 +1628,7 @@ async function submitAuth(){
   }
 
   /* Local preview mode: no server, so no code to check. */
-  if (!API) { finishSignIn(email); return; }
+  if (!apiBase()) { finishSignIn(email); return; }
 
   if (!$("#authStep2").hidden) {
     var code = ($("#authCode").value || "").trim();
@@ -1607,7 +1653,7 @@ async function submitAuth(){
   setTimeout(function(){ var c = $("#authCode"); if (c) c.focus(); }, 30);
 }
 function signOut(){
-  if (API) apiFetch("/auth/logout", { method: "POST" });
+  if (apiBase()) apiFetch("/auth/logout", { method: "POST" });
   state.session = null;
   localStorage.removeItem("jatayu.session");
   $("#acctMenu").hidden = true;
@@ -1615,7 +1661,7 @@ function signOut(){
   setStatus("", false);
 }
 function loadServerSearches(){
-  if (!API || !state.session) return;
+  if (!apiBase() || !state.session) return;
   apiFetch("/searches").then(function(r){
     if (!r.ok || !r.body.searches) return;
     var remote = r.body.searches.map(function(s){ return s.query; });
@@ -1626,7 +1672,7 @@ function loadServerSearches(){
   });
 }
 function pushServerSearch(query){
-  if (!API || !state.session) return;
+  if (!apiBase() || !state.session) return;
   apiFetch("/searches", {
     method: "POST",
     body: { query: query, filters: state.loc ? { location: state.loc.name, radiusKm: state.radius, type: state.tab } : null, pinned: true },
@@ -1790,6 +1836,28 @@ function init(){
     renderLocBar();
   });
 
+  /* search index configuration */
+  var apiInput = $("#apiUrl");
+  if (apiInput) apiInput.value = apiBase();
+  $("#apiSave").addEventListener("click", function(){
+    var v = (apiInput.value || "").trim().replace(/\/$/, "");
+    try {
+      if (v) localStorage.setItem("jatayu.api", v);
+      else localStorage.removeItem("jatayu.api");
+    } catch (e) {}
+    location.reload();
+  });
+  $("#apiTest").addEventListener("click", function(){
+    var v = (apiInput.value || "").trim().replace(/\/$/, "");
+    var out = $("#apiStatus");
+    if (!v) { out.textContent = "—"; return; }
+    out.textContent = "…";
+    fetch(v + "/?ping=1").then(function(r){ return r.json(); }).then(function(j){
+      out.textContent = j && j.ok ? "OK · " + (j.provider || "unknown") : "Failed";
+    }).catch(function(){ out.textContent = "Failed (network or CORS)"; });
+  });
+  $("#openIndexSettings").addEventListener("click", openDrawer);
+
   /* account */
   $("#acctBtn").addEventListener("click", function(ev){
     ev.stopPropagation();
@@ -1910,7 +1978,7 @@ function init(){
   });
 
   /* With a real API, the cookie is the source of truth for who is signed in. */
-  if (API) {
+  if (apiBase()) {
     apiFetch("/me").then(function(r){
       if (r.ok && r.body && r.body.email) {
         state.session = { email: r.body.email };
