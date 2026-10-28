@@ -1,0 +1,19 @@
+{
+  "name": "Jatayu — see what others miss",
+  "short_name": "Jatayu",
+  "description": "A fast, free, themeable search engine for India.",
+  "start_url": "./jatayu.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0e1116",
+  "theme_color": "#0e1116",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["search", "productivity", "utilities"],
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
