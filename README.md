@@ -14,6 +14,7 @@ Open `jatayu.html` and everything below is live, in one self-contained file with
 - **Nine interface languages** — English, हिन्दी, मराठी, संस्कृतम्, Español, Français, العربية, 日本語, 简体中文 — with real right-to-left handling for Arabic.
 - **Voice search** via the Web Speech API, with per-language recognition and an editable transcript.
 - **Account menu and settings in the top-right corner.** With the worker configured, sign-in is a real email-code flow backed by D1, and saved searches sync to the account. Without it, sign-in falls back to a device-local preview that says so.
+- **Installable and offline-capable.** A service worker caches the shell, so the app opens without a connection and shows an offline banner instead of a dead page; add-to-home-screen appears where the browser offers it.
 - **Email results** and **saved searches**, both device-local in this build.
 
 ## Run it locally
@@ -34,7 +35,6 @@ Being explicit, because a prototype that pretends to be a product wastes everyon
 - **The Videos tab is thin.** Commons holds relatively few video files, so expect sparse results until a search proxy is connected.
 - **Nominatim's usage policy caps this at roughly one request per second** and forbids heavy or bulk use. That is fine for a demo and not fine for real traffic — see below.
 - **The backend exists but is not deployed yet.** `worker/` contains real email-code auth, sessions, saved-search sync and account deletion, tested but inactive until you create the D1 database and add the Resend key. Until then the page runs its device-local preview. Scheduled email digests are still unbuilt, and "Email results" opens the user's mail client rather than sending from the server.
-- **No PWA manifest or service worker**, so no offline shell or install prompt.
 - **Theme, history and location live in `localStorage`** and never leave the device.
 
 ## The build specification
