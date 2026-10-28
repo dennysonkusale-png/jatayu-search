@@ -52,15 +52,15 @@ caches for five minutes.
 browser  ->  worker (Brave or SearXNG key, CORS, cache)  ->  provider
 ```
 
-Deploy it in about five minutes (`worker/README.md` has the commands), then paste its URL into
-the meta tag near the top of `jatayu.html`:
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/
 
-```html
-<meta name="jatayu-proxy" content="https://jatayu-search-proxy.<you>.workers.dev">
-```
+Deploy it from that button, or follow `worker/README.md`. Then paste the worker URL into
+**Settings → Search index URL** in the app and press Save — no editing files, no rebuild. You can
+also hard-code it in the `<meta name="jatayu-proxy">` tag in `jatayu.html` if you prefer.
 
-Until that is set the app quietly uses Wikipedia and OpenStreetMap, which is what the live demo
-does. If the worker is down the page falls back to Wikipedia rather than breaking.
+Until an index is configured the app uses Wikipedia and Wikinews, and says so in a banner above
+the results, because those are an encyclopaedia and a news wire rather than a web index. If the
+worker is unreachable the page falls back to them rather than breaking.
 
 ## Design decisions worth knowing
 
